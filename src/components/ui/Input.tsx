@@ -30,7 +30,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               className={`
                 absolute left-3 px-2 pointer-events-none z-10
                 font-medium transition-colors duration-200
-                ${isActive ? 'bg-[#0a0e1a] text-altrion-400' : 'bg-transparent text-gray-500'}
+                ${isActive ? 'bg-dark-bg text-altrion-400' : 'bg-transparent text-gray-500'}
                 ${error ? 'text-error' : ''}
               `}
               style={{
