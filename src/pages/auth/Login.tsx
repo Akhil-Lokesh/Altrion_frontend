@@ -4,15 +4,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, TrendingUp, Clock, Shield } from 'lucide-react';
 import { AuthLayout } from '../../components/layout/AuthLayout';
 import { Input } from '../../components/ui';
-import { useForm, usePasswordToggle } from '../../hooks';
 import { ROUTES } from '../../constants';
-import type { LoginFormData } from '../../types';
 
 export function Login() {
   const navigate = useNavigate();
-  const { showPassword, togglePassword, inputType } = usePasswordToggle();
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { values: form, updateValue } = useForm<LoginFormData>({
+  const [form, setForm] = useState({
     email: '',
     password: '',
   });
@@ -65,7 +63,7 @@ export function Login() {
             label="Email"
             type="email"
             value={form.email}
-            onChange={(e) => updateValue('email', e.target.value)}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
             icon={<Mail size={18} />}
             required
           />
@@ -81,15 +79,15 @@ export function Login() {
           <div className="relative">
             <Input
               label="Password"
-              type={inputType}
+              type={showPassword ? 'text' : 'password'}
               value={form.password}
-              onChange={(e) => updateValue('password', e.target.value)}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
               icon={<Lock size={18} />}
               required
             />
             <button
               type="button"
-              onClick={togglePassword}
+              onClick={() => setShowPassword(!showPassword)}
               className="absolute right-12 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors z-20"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
