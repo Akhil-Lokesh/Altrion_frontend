@@ -4,16 +4,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, Eye, EyeOff, Check, Shield, Users, Zap } from 'lucide-react';
 import { AuthLayout } from '../../components/layout/AuthLayout';
 import { Button, Input } from '../../components/ui';
-import { useForm, usePasswordToggle } from '../../hooks';
 import { getPasswordRequirements } from '../../utils';
 import { ROUTES } from '../../constants';
-import type { SignupFormData } from '../../types';
 
 export function Signup() {
   const navigate = useNavigate();
-  const { showPassword, togglePassword, inputType } = usePasswordToggle();
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { values: form, updateValue } = useForm<SignupFormData>({
+  const [form, setForm] = useState({
     name: '',
     email: '',
     password: '',
@@ -103,7 +101,7 @@ export function Signup() {
             label="Full Name"
             type="text"
             value={form.name}
-            onChange={(e) => updateValue('name', e.target.value)}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
             icon={<User size={18} />}
             required
           />
@@ -118,7 +116,7 @@ export function Signup() {
             label="Email"
             type="email"
             value={form.email}
-            onChange={(e) => updateValue('email', e.target.value)}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
             icon={<Mail size={18} />}
             required
           />
@@ -133,15 +131,15 @@ export function Signup() {
           <div className="relative">
             <Input
               label="Password"
-              type={inputType}
+              type={showPassword ? 'text' : 'password'}
               value={form.password}
-              onChange={(e) => updateValue('password', e.target.value)}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
               icon={<Lock size={18} />}
               required
             />
             <button
               type="button"
-              onClick={togglePassword}
+              onClick={() => setShowPassword(!showPassword)}
               className="absolute right-12 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors z-20"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
@@ -157,9 +155,9 @@ export function Signup() {
         >
           <Input
             label="Confirm Password"
-            type={inputType}
+            type={showPassword ? 'text' : 'password'}
             value={form.confirmPassword}
-            onChange={(e) => updateValue('confirmPassword', e.target.value)}
+            onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
             icon={<Lock size={18} />}
             required
           />
