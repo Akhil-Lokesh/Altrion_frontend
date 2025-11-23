@@ -101,7 +101,7 @@ export function Login() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="flex items-center justify-center mt-2"
+          className="flex items-center justify-end mt-3"
         >
           <a
             href="#"
