@@ -142,7 +142,7 @@ export function Signup() {
             <button
               type="button"
               onClick={togglePassword}
-              className="absolute right-12 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors z-20"
+              className="absolute right-12 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors z-20"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -184,7 +184,7 @@ export function Signup() {
                   req.met ? 'bg-altrion-500' : 'bg-dark-border'
                 }`}
               >
-                {req.met && <Check size={10} className="text-white" />}
+                {req.met && <Check size={10} className="text-text-primary" />}
               </div>
               <span className={req.met ? 'text-text-primary' : 'text-text-muted'}>
                 {req.label}

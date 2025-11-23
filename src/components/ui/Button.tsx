@@ -25,9 +25,9 @@ export function Button({
   const baseStyles = 'font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-dark-bg';
 
   const variants = {
-    primary: 'bg-altrion-500 hover:bg-altrion-600 active:bg-altrion-700 text-white shadow-lg shadow-altrion-500/25 hover:shadow-xl hover:shadow-altrion-500/30 focus:ring-altrion-500',
-    secondary: 'bg-dark-elevated border border-dark-border hover:border-altrion-500/50 hover:bg-dark-input text-white focus:ring-altrion-500/50',
-    ghost: 'bg-transparent hover:bg-dark-elevated text-text-secondary hover:text-white focus:ring-dark-border',
+    primary: 'bg-altrion-500 hover:bg-altrion-600 active:bg-altrion-700 text-text-primary shadow-lg shadow-altrion-500/25 hover:shadow-xl hover:shadow-altrion-500/30 focus:ring-altrion-500',
+    secondary: 'bg-dark-elevated border border-dark-border hover:border-altrion-500/50 hover:bg-dark-input text-text-primary focus:ring-altrion-500/50',
+    ghost: 'bg-transparent hover:bg-dark-elevated text-text-secondary hover:text-text-primary focus:ring-dark-border',
   };
 
   const sizes = {
@@ -53,7 +53,7 @@ export function Button({
     >
       {loading ? (
         <motion.div
-          className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+          className="w-5 h-5 border-2 border-text-primary/30 border-t-text-primary rounded-full"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />

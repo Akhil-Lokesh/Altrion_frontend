@@ -13,7 +13,7 @@ import {
   Settings,
   LogOut,
 } from 'lucide-react';
-import { Button, Card, Logo } from '../../components/ui';
+import { Button, Card, Logo, ThemeToggle } from '../../components/ui';
 import { mockPortfolio, mockLoanEligibility } from '../../mock/data';
 import { formatCurrency, formatPercent, generateChartData, normalizeChartY, normalizeChartX } from '../../utils';
 import type { ChartPeriod } from '../../utils';
@@ -74,6 +74,8 @@ export function Dashboard() {
                 <Settings size={18} />
               </Button>
               <div className="w-px h-6 bg-dark-border" />
+              <ThemeToggle />
+              <div className="w-px h-6 bg-dark-border" />
               <Button variant="ghost" size="sm" onClick={() => navigate(ROUTES.LOGIN)}>
                 <LogOut size={18} />
               </Button>
@@ -92,7 +94,7 @@ export function Dashboard() {
           {/* Header */}
           <motion.div variants={ITEM_VARIANTS} className="flex items-center justify-between">
             <div>
-              <h1 className="font-display text-3xl font-bold text-white">Dashboard</h1>
+              <h1 className="font-display text-3xl font-bold text-text-primary">Dashboard</h1>
               <p className="text-text-secondary text-sm mt-0.5">Welcome back! Here's your portfolio overview.</p>
             </div>
             <Button onClick={() => navigate(ROUTES.CONNECT_SELECT)}>
@@ -114,7 +116,7 @@ export function Dashboard() {
                     Total Portfolio Value
                   </p>
                   <div className="flex items-baseline gap-4">
-                    <h2 className="text-5xl lg:text-6xl font-bold text-white">
+                    <h2 className="text-5xl lg:text-6xl font-bold text-text-primary">
                       {formatCurrency(mockPortfolio.totalValue)}
                     </h2>
                     <div
@@ -138,7 +140,7 @@ export function Dashboard() {
                 <div className="flex gap-3">
                   <div className="text-center px-6 py-4 bg-dark-elevated/80 backdrop-blur rounded-xl border border-dark-border hover:border-altrion-500/30 transition-all">
                     <p className="text-text-muted text-xs mb-1 uppercase tracking-wider">Crypto</p>
-                    <p className="text-white font-bold text-lg">
+                    <p className="text-text-primary font-bold text-lg">
                       {formatCurrency(
                         mockPortfolio.assets
                           .filter(a => a.type === 'crypto')
@@ -148,7 +150,7 @@ export function Dashboard() {
                   </div>
                   <div className="text-center px-6 py-4 bg-dark-elevated/80 backdrop-blur rounded-xl border border-dark-border hover:border-altrion-500/30 transition-all">
                     <p className="text-text-muted text-xs mb-1 uppercase tracking-wider">Stocks</p>
-                    <p className="text-white font-bold text-lg">
+                    <p className="text-text-primary font-bold text-lg">
                       {formatCurrency(
                         mockPortfolio.assets
                           .filter(a => a.type === 'stock')
@@ -158,7 +160,7 @@ export function Dashboard() {
                   </div>
                   <div className="text-center px-6 py-4 bg-dark-elevated/80 backdrop-blur rounded-xl border border-dark-border hover:border-altrion-500/30 transition-all">
                     <p className="text-text-muted text-xs mb-1 uppercase tracking-wider">Stable</p>
-                    <p className="text-white font-bold text-lg">
+                    <p className="text-text-primary font-bold text-lg">
                       {formatCurrency(
                         mockPortfolio.assets
                           .filter(a => a.type === 'stablecoin')
@@ -180,7 +182,7 @@ export function Dashboard() {
                     <Wallet size={20} className="text-altrion-400" />
                   </div>
                   <div>
-                    <h3 className="font-display text-xl font-semibold text-white">Loan Eligibility</h3>
+                    <h3 className="font-display text-xl font-semibold text-text-primary">Loan Eligibility</h3>
                     <p className="text-sm text-text-secondary">Based on your portfolio</p>
                   </div>
                 </div>
@@ -194,11 +196,11 @@ export function Dashboard() {
                   </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-text-muted text-xs">Max LTV</span>
-                    <span className="text-xl font-bold text-white">{mockLoanEligibility.maxLTV}%</span>
+                    <span className="text-xl font-bold text-text-primary">{mockLoanEligibility.maxLTV}%</span>
                   </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-text-muted text-xs">Interest Rate</span>
-                    <span className="text-xl font-bold text-white">5.2%</span>
+                    <span className="text-xl font-bold text-text-primary">5.2%</span>
                   </div>
                 </div>
 
@@ -219,7 +221,7 @@ export function Dashboard() {
                   <PieChart size={20} className="text-purple-400" />
                 </div>
                 <div>
-                  <h3 className="font-display text-xl font-semibold text-white">Asset Allocation</h3>
+                  <h3 className="font-display text-xl font-semibold text-text-primary">Asset Allocation</h3>
                   <p className="text-sm text-text-secondary">Portfolio distribution</p>
                 </div>
               </div>
@@ -240,21 +242,21 @@ export function Dashboard() {
                     <div className="w-3 h-3 rounded-full bg-green-500" />
                     <span className="text-sm text-text-secondary">Crypto</span>
                   </div>
-                  <span className="text-sm font-semibold text-white">{cryptoPercent.toFixed(1)}%</span>
+                  <span className="text-sm font-semibold text-text-primary">{cryptoPercent.toFixed(1)}%</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-blue-500" />
                     <span className="text-sm text-text-secondary">Stocks</span>
                   </div>
-                  <span className="text-sm font-semibold text-white">{stocksPercent.toFixed(1)}%</span>
+                  <span className="text-sm font-semibold text-text-primary">{stocksPercent.toFixed(1)}%</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-amber-500" />
                     <span className="text-sm text-text-secondary">Cash</span>
                   </div>
-                  <span className="text-sm font-semibold text-white">{cashPercent.toFixed(1)}%</span>
+                  <span className="text-sm font-semibold text-text-primary">{cashPercent.toFixed(1)}%</span>
                 </div>
               </div>
 
@@ -272,7 +274,7 @@ export function Dashboard() {
                   <Shield size={20} className="text-accent-cyan" />
                 </div>
                 <div>
-                  <h3 className="font-display text-xl font-semibold text-white">Portfolio Health</h3>
+                  <h3 className="font-display text-xl font-semibold text-text-primary">Portfolio Health</h3>
                   <p className="text-sm text-text-secondary">Overall performance score</p>
                 </div>
               </div>
@@ -296,7 +298,7 @@ export function Dashboard() {
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-4xl font-bold text-white">{mockLoanEligibility.riskScore}</span>
+                    <span className="text-4xl font-bold text-text-primary">{mockLoanEligibility.riskScore}</span>
                     <span className="text-xs text-text-muted">/ 100</span>
                   </div>
                 </div>
@@ -329,7 +331,7 @@ export function Dashboard() {
                     <TrendingUp size={20} className="text-accent-cyan" />
                   </div>
                   <div>
-                    <h3 className="font-display text-xl font-semibold text-white">Portfolio Value</h3>
+                    <h3 className="font-display text-xl font-semibold text-text-primary">Portfolio Value</h3>
                     <p className="text-sm text-text-secondary">Track your growth over time</p>
                   </div>
                 </div>
@@ -342,8 +344,8 @@ export function Dashboard() {
                       onClick={() => setChartPeriod(period)}
                       className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
                         chartPeriod === period
-                          ? 'bg-altrion-500 text-white'
-                          : 'text-text-muted hover:text-white'
+                          ? 'bg-altrion-500 text-text-primary'
+                          : 'text-text-muted hover:text-text-primary'
                       }`}
                     >
                       {period}
@@ -454,7 +456,7 @@ export function Dashboard() {
                       <PieChart size={20} className="text-altrion-400" />
                     </div>
                     <div>
-                      <h3 className="font-display text-xl font-semibold text-white">Your Assets</h3>
+                      <h3 className="font-display text-xl font-semibold text-text-primary">Your Assets</h3>
                       <p className="text-sm text-text-secondary">Detailed breakdown of your holdings</p>
                     </div>
                   </div>
@@ -467,8 +469,8 @@ export function Dashboard() {
                         onClick={() => setActiveTab(tab)}
                         className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
                           activeTab === tab
-                            ? 'bg-dark-card text-white'
-                            : 'text-text-muted hover:text-white'
+                            ? 'bg-dark-card text-text-primary'
+                            : 'text-text-muted hover:text-text-primary'
                         }`}
                       >
                         {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -506,18 +508,18 @@ export function Dashboard() {
                               {asset.symbol.slice(0, 2)}
                             </div>
                             <div>
-                              <p className="font-medium text-white">{asset.name}</p>
+                              <p className="font-medium text-text-primary">{asset.name}</p>
                               <p className="text-text-muted text-sm">{asset.symbol}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-5 py-3 text-white font-semibold">
+                        <td className="px-5 py-3 text-text-primary font-semibold">
                           {formatCurrency(asset.price)}
                         </td>
-                        <td className="px-5 py-3 text-white">
+                        <td className="px-5 py-3 text-text-primary">
                           {asset.amount.toLocaleString()} {asset.symbol}
                         </td>
-                        <td className="px-5 py-3 font-semibold text-white">
+                        <td className="px-5 py-3 font-semibold text-text-primary">
                           {formatCurrency(asset.value)}
                         </td>
                         <td className="px-5 py-3">

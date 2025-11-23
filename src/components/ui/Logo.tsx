@@ -57,7 +57,7 @@ export function Logo({ size = 'md', showText = true }: LogoProps) {
       
       {showText && (
         <span className={`font-bold ${sizes[size].text} tracking-wide`}>
-          <span className="text-white">ALTR</span>
+          <span className="text-text-primary">ALTR</span>
           <span className="text-altrion-400">ION</span>
         </span>
       )}

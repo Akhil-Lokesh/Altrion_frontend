@@ -84,13 +84,13 @@ export function Onboarding() {
             transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
             className="w-24 h-24 bg-gradient-to-br from-altrion-400 to-altrion-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-altrion-500/50"
           >
-            <Trophy className="w-12 h-12 text-white" />
+            <Trophy className="w-12 h-12 text-text-primary" />
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="font-display text-5xl font-bold text-white mb-4 tracking-tight"
+            className="font-display text-5xl font-bold text-text-primary mb-4 tracking-tight"
           >
             You're all set, {form.displayName}!
           </motion.h1>
@@ -160,7 +160,7 @@ export function Onboarding() {
           >
             {/* Step Header */}
             <div className="mb-8">
-              <h1 className="font-display text-3xl font-bold text-white mb-2 tracking-tight">
+              <h1 className="font-display text-3xl font-bold text-text-primary mb-2 tracking-tight">
                 {steps[0].title}
               </h1>
               <p className="text-text-secondary">
@@ -179,7 +179,7 @@ export function Onboarding() {
                   value={form.displayName}
                   onChange={(e) => setForm({ ...form, displayName: e.target.value })}
                   placeholder="Enter your name or nickname"
-                  className="w-full bg-dark-input border border-dark-border rounded-xl px-4 py-3 text-white placeholder-text-muted focus:outline-none focus:border-altrion-500 focus:ring-1 focus:ring-altrion-500/50 transition-all"
+                  className="w-full bg-dark-input border border-dark-border rounded-xl px-4 py-3 text-text-primary placeholder-text-muted focus:outline-none focus:border-altrion-500 focus:ring-1 focus:ring-altrion-500/50 transition-all"
                   autoFocus
                 />
               </div>

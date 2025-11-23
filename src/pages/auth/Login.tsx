@@ -90,7 +90,7 @@ export function Login() {
             <button
               type="button"
               onClick={togglePassword}
-              className="absolute right-12 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors z-20"
+              className="absolute right-12 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors z-20"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -120,11 +120,11 @@ export function Login() {
           transition={{ delay: 0.6, duration: 0.5 }}
           type="submit"
           disabled={loading}
-          className="w-full h-11 mt-4 bg-altrion-500 hover:bg-altrion-600 active:bg-altrion-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-altrion-500 focus:ring-offset-2 focus:ring-offset-dark-bg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
+          className="w-full h-11 mt-4 bg-altrion-500 hover:bg-altrion-600 active:bg-altrion-700 text-text-primary font-semibold rounded-lg transition-all duration-200 shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-altrion-500 focus:ring-offset-2 focus:ring-offset-dark-bg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
         >
           {loading ? (
             <div className="flex items-center justify-center gap-2">
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-text-primary/30 border-t-text-primary rounded-full animate-spin" />
               <span>Signing in...</span>
             </div>
           ) : (
@@ -139,11 +139,11 @@ export function Login() {
           transition={{ delay: 0.7, duration: 0.5 }}
           className="flex items-center gap-3 mt-5 mb-4"
         >
-          <div className="flex-1 border-t border-[#2a2a35]" />
-          <span className="text-sm text-gray-500 font-medium">
+          <div className="flex-1 border-t border-dark-border" />
+          <span className="text-sm text-text-muted font-medium">
             or continue with
           </span>
-          <div className="flex-1 border-t border-[#2a2a35]" />
+          <div className="flex-1 border-t border-dark-border" />
         </motion.div>
 
         {/* Social Login Buttons */}
@@ -156,7 +156,7 @@ export function Login() {
           <button
             type="button"
             onClick={() => {}}
-            className="h-11 bg-[#1a1a22] border border-[#2a2a35] hover:border-[#3a3a45] hover:bg-[#1f1f2a] text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2.5 font-medium text-[15px] focus:outline-none focus:ring-2 focus:ring-altrion-500/30 hover:scale-[1.02] active:scale-[0.98]"
+            className="h-11 bg-dark-card border border-dark-border hover:border-dark-border-hover hover:bg-dark-elevated text-text-primary rounded-lg transition-all duration-200 flex items-center justify-center gap-2.5 font-medium text-[15px] focus:outline-none focus:ring-2 focus:ring-altrion-500/30 hover:scale-[1.02] active:scale-[0.98]"
           >
             <img
               src="https://www.google.com/favicon.ico"
@@ -168,7 +168,7 @@ export function Login() {
           <button
             type="button"
             onClick={() => {}}
-            className="h-11 bg-[#1a1a22] border border-[#2a2a35] hover:border-[#3a3a45] hover:bg-[#1f1f2a] text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2.5 font-medium text-[15px] focus:outline-none focus:ring-2 focus:ring-altrion-500/30 hover:scale-[1.02] active:scale-[0.98]"
+            className="h-11 bg-dark-card border border-dark-border hover:border-dark-border-hover hover:bg-dark-elevated text-text-primary rounded-lg transition-all duration-200 flex items-center justify-center gap-2.5 font-medium text-[15px] focus:outline-none focus:ring-2 focus:ring-altrion-500/30 hover:scale-[1.02] active:scale-[0.98]"
           >
             <svg className="w-[18px] h-[18px]" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
@@ -182,7 +182,7 @@ export function Login() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9, duration: 0.5 }}
-          className="text-center text-gray-400 mt-4"
+          className="text-center text-text-muted mt-4"
         >
           Don't have an account?{' '}
           <Link

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Wallet, Building, TrendingUp, ArrowRight, Check, Search } from 'lucide-react';
-import { Button, Card, Logo, Input } from '../../components/ui';
+import { Button, Card, Logo, Input, ThemeToggle } from '../../components/ui';
 import { walletPlatforms } from '../../mock/data';
 import { PLATFORM_ICONS, ROUTES } from '../../constants';
 
@@ -46,9 +46,12 @@ export function SelectWallets() {
       <div className="p-4 border-b border-dark-border">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Logo size="sm" />
-          <Button variant="ghost" onClick={handleSkip}>
-            Skip for now
-          </Button>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Button variant="ghost" onClick={handleSkip}>
+              Skip for now
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -59,7 +62,7 @@ export function SelectWallets() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-6"
         >
-          <h1 className="font-display text-3xl font-bold text-white mb-2 tracking-tight">
+          <h1 className="font-display text-3xl font-bold text-text-primary mb-2 tracking-tight">
             Connect your accounts
           </h1>
           <p className="text-text-secondary text-sm max-w-md mx-auto mb-3">
@@ -84,8 +87,8 @@ export function SelectWallets() {
               onClick={() => setActiveCategory(cat.id)}
               className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-all ${
                 activeCategory === cat.id
-                  ? 'bg-dark-elevated text-white'
-                  : 'text-text-muted hover:text-white'
+                  ? 'bg-dark-elevated text-text-primary'
+                  : 'text-text-muted hover:text-text-primary'
               }`}
             >
               <cat.icon size={18} className={activeCategory === cat.id ? cat.color : ''} />
@@ -112,7 +115,7 @@ export function SelectWallets() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6"
+            className="grid grid-cols-2 sm:grid-cols-4 gap-12 mb-6"
           >
             {currentPlatforms.map((platform, index) => (
               <motion.button
@@ -123,10 +126,10 @@ export function SelectWallets() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => togglePlatform(platform.id)}
-                className={`relative p-4 rounded-xl border-2 transition-all text-left ${
+                className={`relative w-full aspect-square rounded-xl border-2 transition-all flex flex-col items-center justify-center gap-3 ${
                   selectedPlatforms.includes(platform.id)
                     ? 'border-altrion-500 bg-altrion-500/10'
-                    : 'border-dark-border bg-dark-card hover:border-dark-border/80'
+                    : 'border-dark-border bg-dark-card hover:border-dark-border-hover'
                 }`}
               >
                 {selectedPlatforms.includes(platform.id) && (
@@ -139,15 +142,21 @@ export function SelectWallets() {
                   </motion.div>
                 )}
                 {(() => {
-                  const Icon = PLATFORM_ICONS[platform.id]?.icon;
-                  const color = PLATFORM_ICONS[platform.id]?.color || 'bg-gray-500/20 text-gray-400';
+                  const platformConfig = PLATFORM_ICONS[platform.id];
+                  const Icon = platformConfig?.icon;
+                  const logo = platformConfig?.logo;
+                  const color = platformConfig?.color || 'bg-gray-500/20 text-gray-400';
                   return (
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${color}`}>
-                      {Icon && <Icon size={24} />}
+                    <div className={`w-14 h-14 rounded-lg flex items-center justify-center ${color}`}>
+                      {logo ? (
+                        <img src={logo} alt={platform.name} className="w-10 h-10 object-contain" />
+                      ) : Icon ? (
+                        <Icon size={28} />
+                      ) : null}
                     </div>
                   );
                 })()}
-                <span className="font-medium text-white">{platform.name}</span>
+                <span className="font-medium text-text-primary text-center text-sm">{platform.name}</span>
               </motion.button>
             ))}
           </motion.div>
@@ -165,7 +174,7 @@ export function SelectWallets() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-display text-text-secondary text-sm">Selected accounts</p>
-                    <p className="text-white font-semibold">
+                    <p className="text-text-primary font-semibold">
                       <span className="font-bold">{selectedPlatforms.length}</span> platform{selectedPlatforms.length !== 1 ? 's' : ''} ready to connect
                     </p>
                   </div>
@@ -173,12 +182,22 @@ export function SelectWallets() {
                     {selectedPlatforms.slice(0, 5).map((id) => {
                       const platform = [...walletPlatforms.crypto, ...walletPlatforms.banks, ...walletPlatforms.brokers]
                         .find(p => p.id === id);
+                      const platformConfig = PLATFORM_ICONS[id];
+                      const Icon = platformConfig?.icon;
+                      const logo = platformConfig?.logo;
+                      const color = platformConfig?.color || 'bg-gray-500/20';
                       return (
                         <div
                           key={id}
-                          className="w-10 h-10 rounded-full bg-dark-elevated border-2 border-dark-bg flex items-center justify-center text-lg"
+                          className={`w-10 h-10 rounded-full border-2 border-dark-bg flex items-center justify-center text-lg ${color}`}
                         >
-                          {platform?.icon}
+                          {logo ? (
+                            <img src={logo} alt={platform?.name} className="w-8 h-8 object-contain" />
+                          ) : Icon ? (
+                            <Icon size={20} />
+                          ) : (
+                            platform?.icon
+                          )}
                         </div>
                       );
                     })}

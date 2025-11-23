@@ -21,6 +21,7 @@ export interface ConnectionState {
 }
 
 export interface PlatformIcon {
-  icon: any;
+  icon?: any;
+  logo?: string;
   color: string;
 }

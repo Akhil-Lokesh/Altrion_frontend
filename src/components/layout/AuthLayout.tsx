@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import type { ReactNode } from 'react';
 import { Logo } from '../ui/Logo';
+import { ThemeToggle } from '../ui/ThemeToggle';
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -13,6 +14,11 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
     <div className="min-h-screen flex relative overflow-hidden">
       {/* Global background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-dark-bg via-dark-bg to-dark-card" />
+
+      {/* Theme Toggle */}
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
 
       {/* Left side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 p-8 flex-col justify-center items-center relative">
@@ -103,7 +109,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
 
           {/* Form header */}
           <div className="mb-5">
-            <h1 className="font-display text-3xl lg:text-4xl font-bold text-white mb-2 tracking-tight leading-tight">
+            <h1 className="font-display text-3xl lg:text-4xl font-bold text-text-primary mb-2 tracking-tight leading-tight">
               {title}
             </h1>
             {subtitle && (

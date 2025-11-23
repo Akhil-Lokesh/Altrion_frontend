@@ -30,11 +30,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               className={`
                 absolute left-3 px-2 pointer-events-none z-10
                 font-medium transition-colors duration-200
-                ${isActive ? 'bg-[#0a0e1a] text-altrion-400' : 'bg-transparent text-gray-500'}
+                ${isActive ? 'text-altrion-400' : 'text-text-muted'}
                 ${error ? 'text-error' : ''}
               `}
               style={{
                 transformOrigin: 'left center',
+                backgroundColor: 'var(--color-dark-bg)',
               }}
             >
               {label}
@@ -64,13 +65,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             className={`
               w-full bg-transparent border-2 rounded-lg
               h-12
-              px-3 text-white text-[15px]
+              px-3 text-text-primary text-[15px]
               focus:outline-none transition-all duration-200
               ${error
                 ? 'border-error focus:border-error'
                 : isFocused
                   ? 'border-altrion-500'
-                  : 'border-[#2a2a35] hover:border-[#3a3a45]'
+                  : 'border-dark-border hover:border-dark-border-hover'
               }
               ${className}
             `}
