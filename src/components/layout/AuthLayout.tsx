@@ -33,7 +33,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
         </div>
 
         {/* Centered Content Container */}
-        <div className="relative z-10 w-full max-w-xl flex flex-col items-center text-center space-y-8">
+        <div className="relative z-10 w-full max-w-xl flex flex-col items-center text-center space-y-4">
           {/* Logo */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -41,7 +41,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
             transition={{ duration: 0.6 }}
             className="flex justify-center"
           >
-            <Logo size="lg" />
+            <Logo size="lg" variant="full" showText={false} />
           </motion.div>
 
           {/* Main Content */}

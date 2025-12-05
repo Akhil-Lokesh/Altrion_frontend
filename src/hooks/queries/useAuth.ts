@@ -1,0 +1,88 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { authService } from '@/services';
+import { useAuthStore } from '@/store';
+import { ROUTES } from '@/constants';
+import type { LoginFormData, SignupFormData } from '@/schemas';
+
+export const authKeys = {
+  all: ['auth'] as const,
+  user: () => [...authKeys.all, 'user'] as const,
+};
+
+export function useLogin() {
+  const navigate = useNavigate();
+  const { login: storeLogin, setLoading, setError } = useAuthStore();
+
+  return useMutation({
+    mutationFn: (credentials: LoginFormData) => authService.login(credentials),
+    onMutate: () => {
+      setLoading(true);
+      setError(null);
+    },
+    onSuccess: (data) => {
+      storeLogin(data.user, data.tokens.accessToken);
+      navigate(ROUTES.DASHBOARD);
+    },
+    onError: (error: Error) => {
+      setError(error.message);
+    },
+    onSettled: () => {
+      setLoading(false);
+    },
+  });
+}
+
+export function useSignup() {
+  const navigate = useNavigate();
+  const { login: storeLogin, setLoading, setError } = useAuthStore();
+
+  return useMutation({
+    mutationFn: (data: SignupFormData) => authService.signup(data),
+    onMutate: () => {
+      setLoading(true);
+      setError(null);
+    },
+    onSuccess: (data) => {
+      storeLogin(data.user, data.tokens.accessToken);
+      navigate(ROUTES.ONBOARDING);
+    },
+    onError: (error: Error) => {
+      setError(error.message);
+    },
+    onSettled: () => {
+      setLoading(false);
+    },
+  });
+}
+
+export function useLogout() {
+  const navigate = useNavigate();
+  const { logout: storeLogout } = useAuthStore();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => authService.logout(),
+    onSuccess: () => {
+      storeLogout();
+      queryClient.clear();
+      navigate(ROUTES.LOGIN);
+    },
+  });
+}
+
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (email: string) => authService.forgotPassword(email),
+  });
+}
+
+export function useOAuthLogin() {
+  return useMutation({
+    mutationFn: (provider: 'google' | 'github') => authService.oauthLogin(provider),
+    onSuccess: (url) => {
+      // Redirect to OAuth provider
+      window.location.href = url;
+    },
+  });
+}

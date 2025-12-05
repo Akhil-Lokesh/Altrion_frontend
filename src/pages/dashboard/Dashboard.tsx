@@ -13,17 +13,24 @@ import {
   Settings,
   LogOut,
 } from 'lucide-react';
-import { Button, Card, Logo, ThemeToggle, Checkbox, Tooltip } from '../../components/ui';
+import { Button, Card, Logo, ThemeToggle } from '../../components/ui';
 import { mockPortfolio, mockLoanEligibility } from '../../mock/data';
 import { formatCurrency, formatPercent, generateChartData, normalizeChartY, normalizeChartX } from '../../utils';
 import type { ChartPeriod } from '../../utils';
 import { CONTAINER_VARIANTS, ITEM_VARIANTS, ROUTES } from '../../constants';
+import { useLogout } from '../../hooks';
 
 export function Dashboard() {
   const navigate = useNavigate();
+  const logoutMutation = useLogout();
   const [activeTab, setActiveTab] = useState<'all' | 'crypto' | 'stocks' | 'cash'>('all');
   const [chartPeriod, setChartPeriod] = useState<ChartPeriod>('24H');
-  const [selectedAssetIds, setSelectedAssetIds] = useState<string[]>([]);
+  const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
+
+  // Get selected asset
+  const selectedAsset = selectedAssetId
+    ? mockPortfolio.assets.find(a => a.id === selectedAssetId)
+    : null;
 
   const filteredAssets = mockPortfolio.assets.filter(asset => {
     if (activeTab === 'all') return true;
@@ -33,54 +40,14 @@ export function Dashboard() {
     return true;
   });
 
-  // Handle individual asset selection
-  const handleSelectAsset = (assetId: string) => {
-    setSelectedAssetIds(prev =>
-      prev.includes(assetId)
-        ? prev.filter(id => id !== assetId)
-        : [...prev, assetId]
-    );
-  };
-
-  // Handle select all for current filtered view
-  const handleSelectAll = () => {
-    const filteredAssetIds = filteredAssets.map(a => a.id);
-    const allSelected = filteredAssetIds.every(id => selectedAssetIds.includes(id));
-
-    if (allSelected) {
-      setSelectedAssetIds(prev => prev.filter(id => !filteredAssetIds.includes(id)));
-    } else {
-      setSelectedAssetIds(prev => {
-        const newIds = filteredAssetIds.filter(id => !prev.includes(id));
-        return [...prev, ...newIds];
-      });
-    }
-  };
-
-  // Calculate checkbox states
-  const filteredAssetIds = filteredAssets.map(a => a.id);
-  const selectedCount = filteredAssetIds.filter(id => selectedAssetIds.includes(id)).length;
-  const isAllSelected = selectedCount === filteredAssetIds.length && filteredAssetIds.length > 0;
-  const isIndeterminate = selectedCount > 0 && selectedCount < filteredAssetIds.length;
-
-  // Navigate to loan application
+  // Navigate to loan application page
   const handleApplyForLoan = () => {
-    if (selectedAssetIds.length === 0) return;
-
-    navigate(ROUTES.LOAN_APPLICATION, {
-      state: { selectedAssetIds }
-    });
+    navigate(ROUTES.LOAN_APPLICATION);
   };
 
-  // Scroll to assets table (for top loan button)
-  const scrollToAssets = () => {
-    const assetsSection = document.getElementById('assets-table');
-    if (assetsSection) {
-      assetsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  const chartData = generateChartData(mockPortfolio.totalValue, chartPeriod);
+  // Use selected asset value or total portfolio value for chart
+  const chartBaseValue = selectedAsset ? selectedAsset.value : mockPortfolio.totalValue;
+  const chartData = generateChartData(chartBaseValue, chartPeriod);
   const maxValue = Math.max(...chartData.map(d => d.value));
   const minValue = Math.min(...chartData.map(d => d.value));
 
@@ -110,9 +77,11 @@ export function Dashboard() {
 
       {/* Navigation */}
       <nav className="border-b border-dark-border bg-dark-card/80 backdrop-blur-lg sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-5 py-3">
+        <div className="max-w-7xl mx-auto px-5 py-0.5">
           <div className="flex items-center justify-between">
-            <Logo size="sm" />
+            <div className="-ml-2">
+              <Logo size="sm" variant="icon" />
+            </div>
 
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm">
@@ -124,7 +93,7 @@ export function Dashboard() {
               <div className="w-px h-6 bg-dark-border" />
               <ThemeToggle />
               <div className="w-px h-6 bg-dark-border" />
-              <Button variant="ghost" size="sm" onClick={() => navigate(ROUTES.LOGIN)}>
+              <Button variant="ghost" size="sm" onClick={() => logoutMutation.mutate()}>
                 <LogOut size={18} />
               </Button>
             </div>
@@ -252,15 +221,10 @@ export function Dashboard() {
                   </div>
                 </div>
 
-                <Tooltip
-                  content="Select some asset"
-                  disabled={selectedAssetIds.length > 0}
-                >
-                  <Button onClick={selectedAssetIds.length > 0 ? handleApplyForLoan : scrollToAssets}>
-                    Apply for a Loan
-                    <ArrowUpRight size={16} />
-                  </Button>
-                </Tooltip>
+                <Button onClick={handleApplyForLoan}>
+                  Apply for a Loan
+                  <ArrowUpRight size={16} />
+                </Button>
               </div>
             </Card>
           </motion.div>
@@ -380,12 +344,37 @@ export function Dashboard() {
             <Card variant="bordered">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-accent-cyan/20 flex items-center justify-center">
-                    <TrendingUp size={20} className="text-accent-cyan" />
-                  </div>
+                  {selectedAsset ? (
+                    <div className="w-10 h-10 rounded-full bg-dark-elevated flex items-center justify-center font-bold text-sm">
+                      {selectedAsset.symbol.slice(0, 2)}
+                    </div>
+                  ) : (
+                    <div className="w-10 h-10 rounded-xl bg-accent-cyan/20 flex items-center justify-center">
+                      <TrendingUp size={20} className="text-accent-cyan" />
+                    </div>
+                  )}
                   <div>
-                    <h3 className="font-display text-xl font-semibold text-text-primary">Portfolio Value</h3>
-                    <p className="text-sm text-text-secondary">Track your growth over time</p>
+                    <h3 className="font-display text-xl font-semibold text-text-primary">
+                      {selectedAsset ? `${selectedAsset.name} (${selectedAsset.symbol})` : 'Portfolio Value'}
+                    </h3>
+                    <p className="text-sm text-text-secondary">
+                      {selectedAsset ? (
+                        <span className="flex items-center gap-2">
+                          <span>{formatCurrency(selectedAsset.value)}</span>
+                          <span className={selectedAsset.change24h >= 0 ? 'text-green-400' : 'text-red-400'}>
+                            {formatPercent(selectedAsset.change24h)}
+                          </span>
+                          <button
+                            onClick={() => setSelectedAssetId(null)}
+                            className="text-altrion-400 hover:underline ml-2"
+                          >
+                            View all
+                          </button>
+                        </span>
+                      ) : (
+                        'Track your growth over time'
+                      )}
+                    </p>
                   </div>
                 </div>
 
@@ -408,7 +397,7 @@ export function Dashboard() {
               </div>
 
               {/* Chart */}
-              <div className="relative h-64 w-full">
+              <div className="relative h-64 w-full pl-10">
                 <svg className="w-full h-full" viewBox="0 0 800 200" preserveAspectRatio="none">
                   {/* Gradient Definitions */}
                   <defs>
@@ -466,9 +455,9 @@ export function Dashboard() {
                 </svg>
 
                 {/* Value Labels on Y-axis */}
-                <div className="absolute left-0 top-0 h-full flex flex-col justify-between py-2 -ml-2">
+                <div className="absolute left-0 top-0 h-full flex flex-col justify-between py-2">
                   {[maxValue, (maxValue + minValue) / 2, minValue].map((val, i) => (
-                    <span key={i} className="text-xs text-text-muted">
+                    <span key={i} className="text-xs text-text-muted w-9 text-right">
                       ${(val / 1000).toFixed(0)}k
                     </span>
                   ))}
@@ -476,7 +465,7 @@ export function Dashboard() {
               </div>
 
               {/* X-axis Labels */}
-              <div className="flex justify-between mt-3 px-2">
+              <div className="flex justify-between mt-3 pl-10 pr-2">
                 {chartData.map((point, i) => {
                   // Show only first, middle, and last labels to avoid clutter
                   if (chartPeriod === '1M' || chartPeriod === '24H') {
@@ -538,13 +527,6 @@ export function Dashboard() {
                 <table className="w-full">
                   <thead>
                     <tr className="text-left text-text-muted text-sm border-b border-dark-border">
-                      <th className="font-display px-5 py-3 font-medium w-12">
-                        <Checkbox
-                          checked={isAllSelected}
-                          indeterminate={isIndeterminate}
-                          onChange={handleSelectAll}
-                        />
-                      </th>
                       <th className="font-display px-5 py-3 font-medium">Asset</th>
                       <th className="font-display px-5 py-3 font-medium">Price</th>
                       <th className="font-display px-5 py-3 font-medium">Holdings</th>
@@ -560,14 +542,11 @@ export function Dashboard() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: index * 0.05 }}
-                        className="border-b border-dark-border/50 hover:bg-dark-elevated/50 transition-colors"
+                        className={`border-b border-dark-border/50 hover:bg-dark-elevated/50 transition-colors cursor-pointer ${
+                          selectedAssetId === asset.id ? 'bg-altrion-500/10' : ''
+                        }`}
+                        onClick={() => setSelectedAssetId(selectedAssetId === asset.id ? null : asset.id)}
                       >
-                        <td className="px-5 py-3">
-                          <Checkbox
-                            checked={selectedAssetIds.includes(asset.id)}
-                            onChange={() => handleSelectAsset(asset.id)}
-                          />
-                        </td>
                         <td className="px-5 py-3">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-dark-elevated flex items-center justify-center font-bold text-sm">
@@ -610,23 +589,6 @@ export function Dashboard() {
             </Card>
           </motion.div>
 
-          {/* Apply for Loan Button */}
-          <motion.div variants={ITEM_VARIANTS} className="flex justify-center">
-            <Tooltip
-              content="Select some asset"
-              disabled={selectedAssetIds.length > 0}
-            >
-              <Button
-                onClick={handleApplyForLoan}
-                disabled={selectedAssetIds.length === 0}
-                size="lg"
-              >
-                Apply for Loan
-                {selectedAssetIds.length > 0 && ` with ${selectedAssetIds.length} Asset${selectedAssetIds.length !== 1 ? 's' : ''}`}
-                <ArrowUpRight size={16} />
-              </Button>
-            </Tooltip>
-          </motion.div>
         </motion.div>
       </main>
     </div>
