@@ -5,6 +5,7 @@ import { Onboarding } from './pages/auth/Onboarding';
 import { SelectWallets } from './pages/connect/SelectWallets';
 import { ConnectAPI } from './pages/connect/ConnectAPI';
 import { Dashboard } from './pages/dashboard/Dashboard';
+import { LoanApplication } from './pages/dashboard/LoanApplication';
 import { ROUTES } from './constants';
 import { ThemeProvider } from './contexts/ThemeContext';
 
@@ -24,6 +25,7 @@ function App() {
 
           {/* Dashboard */}
           <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+          <Route path={ROUTES.LOAN_APPLICATION} element={<LoanApplication />} />
 
           {/* Default redirect */}
           <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.SIGNUP} replace />} />

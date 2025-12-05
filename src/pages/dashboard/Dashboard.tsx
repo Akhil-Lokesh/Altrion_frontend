@@ -13,7 +13,7 @@ import {
   Settings,
   LogOut,
 } from 'lucide-react';
-import { Button, Card, Logo, ThemeToggle } from '../../components/ui';
+import { Button, Card, Logo, ThemeToggle, Checkbox, Tooltip } from '../../components/ui';
 import { mockPortfolio, mockLoanEligibility } from '../../mock/data';
 import { formatCurrency, formatPercent, generateChartData, normalizeChartY, normalizeChartX } from '../../utils';
 import type { ChartPeriod } from '../../utils';
@@ -23,6 +23,7 @@ export function Dashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'all' | 'crypto' | 'stocks' | 'cash'>('all');
   const [chartPeriod, setChartPeriod] = useState<ChartPeriod>('24H');
+  const [selectedAssetIds, setSelectedAssetIds] = useState<string[]>([]);
 
   const filteredAssets = mockPortfolio.assets.filter(asset => {
     if (activeTab === 'all') return true;
@@ -31,6 +32,53 @@ export function Dashboard() {
     if (activeTab === 'cash') return asset.type === 'stablecoin';
     return true;
   });
+
+  // Handle individual asset selection
+  const handleSelectAsset = (assetId: string) => {
+    setSelectedAssetIds(prev =>
+      prev.includes(assetId)
+        ? prev.filter(id => id !== assetId)
+        : [...prev, assetId]
+    );
+  };
+
+  // Handle select all for current filtered view
+  const handleSelectAll = () => {
+    const filteredAssetIds = filteredAssets.map(a => a.id);
+    const allSelected = filteredAssetIds.every(id => selectedAssetIds.includes(id));
+
+    if (allSelected) {
+      setSelectedAssetIds(prev => prev.filter(id => !filteredAssetIds.includes(id)));
+    } else {
+      setSelectedAssetIds(prev => {
+        const newIds = filteredAssetIds.filter(id => !prev.includes(id));
+        return [...prev, ...newIds];
+      });
+    }
+  };
+
+  // Calculate checkbox states
+  const filteredAssetIds = filteredAssets.map(a => a.id);
+  const selectedCount = filteredAssetIds.filter(id => selectedAssetIds.includes(id)).length;
+  const isAllSelected = selectedCount === filteredAssetIds.length && filteredAssetIds.length > 0;
+  const isIndeterminate = selectedCount > 0 && selectedCount < filteredAssetIds.length;
+
+  // Navigate to loan application
+  const handleApplyForLoan = () => {
+    if (selectedAssetIds.length === 0) return;
+
+    navigate(ROUTES.LOAN_APPLICATION, {
+      state: { selectedAssetIds }
+    });
+  };
+
+  // Scroll to assets table (for top loan button)
+  const scrollToAssets = () => {
+    const assetsSection = document.getElementById('assets-table');
+    if (assetsSection) {
+      assetsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   const chartData = generateChartData(mockPortfolio.totalValue, chartPeriod);
   const maxValue = Math.max(...chartData.map(d => d.value));
@@ -204,10 +252,15 @@ export function Dashboard() {
                   </div>
                 </div>
 
-                <Button>
-                  Apply for a Loan
-                  <ArrowUpRight size={16} />
-                </Button>
+                <Tooltip
+                  content="Select some asset"
+                  disabled={selectedAssetIds.length > 0}
+                >
+                  <Button onClick={selectedAssetIds.length > 0 ? handleApplyForLoan : scrollToAssets}>
+                    Apply for a Loan
+                    <ArrowUpRight size={16} />
+                  </Button>
+                </Tooltip>
               </div>
             </Card>
           </motion.div>
@@ -447,7 +500,7 @@ export function Dashboard() {
           </motion.div>
 
           {/* Assets Table */}
-          <motion.div variants={ITEM_VARIANTS} className="mt-6">
+          <motion.div variants={ITEM_VARIANTS} className="mt-6" id="assets-table">
             <Card variant="bordered" padding="none">
               <div className="p-5 border-b border-dark-border">
                 <div className="flex items-center justify-between">
@@ -485,6 +538,13 @@ export function Dashboard() {
                 <table className="w-full">
                   <thead>
                     <tr className="text-left text-text-muted text-sm border-b border-dark-border">
+                      <th className="font-display px-5 py-3 font-medium w-12">
+                        <Checkbox
+                          checked={isAllSelected}
+                          indeterminate={isIndeterminate}
+                          onChange={handleSelectAll}
+                        />
+                      </th>
                       <th className="font-display px-5 py-3 font-medium">Asset</th>
                       <th className="font-display px-5 py-3 font-medium">Price</th>
                       <th className="font-display px-5 py-3 font-medium">Holdings</th>
@@ -502,6 +562,12 @@ export function Dashboard() {
                         transition={{ delay: index * 0.05 }}
                         className="border-b border-dark-border/50 hover:bg-dark-elevated/50 transition-colors"
                       >
+                        <td className="px-5 py-3">
+                          <Checkbox
+                            checked={selectedAssetIds.includes(asset.id)}
+                            onChange={() => handleSelectAsset(asset.id)}
+                          />
+                        </td>
                         <td className="px-5 py-3">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-dark-elevated flex items-center justify-center font-bold text-sm">
@@ -542,6 +608,24 @@ export function Dashboard() {
                 </table>
               </div>
             </Card>
+          </motion.div>
+
+          {/* Apply for Loan Button */}
+          <motion.div variants={ITEM_VARIANTS} className="flex justify-center">
+            <Tooltip
+              content="Select some asset"
+              disabled={selectedAssetIds.length > 0}
+            >
+              <Button
+                onClick={handleApplyForLoan}
+                disabled={selectedAssetIds.length === 0}
+                size="lg"
+              >
+                Apply for Loan
+                {selectedAssetIds.length > 0 && ` with ${selectedAssetIds.length} Asset${selectedAssetIds.length !== 1 ? 's' : ''}`}
+                <ArrowUpRight size={16} />
+              </Button>
+            </Tooltip>
           </motion.div>
         </motion.div>
       </main>

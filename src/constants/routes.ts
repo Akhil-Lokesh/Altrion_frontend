@@ -10,6 +10,7 @@ export const ROUTES = {
 
   // App routes
   DASHBOARD: '/dashboard',
+  LOAN_APPLICATION: '/dashboard/loan',
 
   // Default
   HOME: '/',
