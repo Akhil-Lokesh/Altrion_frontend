@@ -33,7 +33,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
         </div>
 
         {/* Centered Content Container */}
-        <div className="relative z-10 w-full max-w-xl flex flex-col items-center text-center space-y-4">
+        <div className="relative z-10 w-full max-w-xl flex flex-col items-center text-center space-y-2">
           {/* Logo */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -45,7 +45,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
           </motion.div>
 
           {/* Main Content */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -73,7 +73,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.6 }}
-            className="flex flex-wrap items-center justify-center gap-6 text-base text-text-muted"
+            className="flex flex-wrap items-center justify-center gap-6 text-base text-text-muted mt-4"
           >
             <span className="flex items-center gap-2.5 group cursor-default">
               <div className="w-2 h-2 rounded-full bg-altrion-500 group-hover:scale-125 transition-transform" />
