@@ -204,23 +204,6 @@ export function Dashboard() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-text-muted text-xs">Max Loan Amount</span>
-                    <span className="text-xl font-bold text-altrion-400">
-                      {formatCurrency(mockLoanEligibility.maxLoanAmount)}
-                    </span>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-text-muted text-xs">Max LTV</span>
-                    <span className="text-xl font-bold text-text-primary">{mockLoanEligibility.maxLTV}%</span>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-text-muted text-xs">Interest Rate</span>
-                    <span className="text-xl font-bold text-text-primary">5.2%</span>
-                  </div>
-                </div>
-
                 <Button onClick={handleApplyForLoan}>
                   Apply for a Loan
                   <ArrowUpRight size={16} />

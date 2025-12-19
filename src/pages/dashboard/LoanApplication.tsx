@@ -16,11 +16,12 @@ import {
   Plus,
 } from 'lucide-react';
 import { Button, Card, Logo, ThemeToggle, Checkbox, Tooltip } from '../../components/ui';
-import { mockPortfolio, mockLoanEligibility } from '../../mock/data';
+import { mockPortfolio } from '../../mock/data';
 import { formatCurrency, formatPercent, generateChartData, normalizeChartY, normalizeChartX } from '../../utils';
 import type { ChartPeriod } from '../../utils';
 import { CONTAINER_VARIANTS, ITEM_VARIANTS, ROUTES } from '../../constants';
 import { useLogout } from '../../hooks';
+import type { PayoutCurrency, BankOption } from '@/types';
 
 // Type for collateral amounts
 type CollateralAmounts = Record<string, number>;
@@ -33,6 +34,9 @@ export function LoanApplication() {
   const [selectedAssetIds, setSelectedAssetIds] = useState<string[]>([]);
   const [collateralAmounts, setCollateralAmounts] = useState<CollateralAmounts>({});
   const [expandedAssetId, setExpandedAssetId] = useState<string | null>(null);
+  const [loanMonths, setLoanMonths] = useState<6 | 12 | 18 | 24 | 36>(12);
+  const [payoutCurrency, setPayoutCurrency] = useState<PayoutCurrency>('USD');
+  const [selectedBank, setSelectedBank] = useState<BankOption>('chase');
 
   const filteredAssets = mockPortfolio.assets.filter(asset => {
     if (activeTab === 'all') return true;
@@ -139,9 +143,6 @@ export function LoanApplication() {
     const amount = collateralAmounts[asset.id] || 0;
     return sum + (amount * asset.price);
   }, 0);
-  const maxLTV = 60;
-  const maxLoanAmount = totalCollateralValue * (maxLTV / 100);
-  const interestRate = 5.2;
 
   // Chart data
   const chartData = generateChartData(mockPortfolio.totalValue, chartPeriod);
@@ -151,21 +152,35 @@ export function LoanApplication() {
   const handleSubmit = () => {
     if (selectedAssetIds.length === 0) return;
 
-    // Prepare loan confirmation data
-    const confirmationData = {
-      totalCollateral: totalCollateralValue,
-      loanAmount: maxLoanAmount,
-      interestRate: interestRate,
-      ltv: maxLTV,
-      selectedAssets: selectedAssets.map(asset => ({
-        name: asset.name,
-        symbol: asset.symbol,
-        amount: collateralAmounts[asset.id] || 0,
-        value: (collateralAmounts[asset.id] || 0) * asset.price,
-      })),
-    };
+    // Build request for loan API - only include crypto assets
+    const cryptoAssets = selectedAssets.filter(asset => asset.type === 'crypto' || asset.type === 'stablecoin');
+    
+    if (cryptoAssets.length === 0) {
+      // TODO: Show error - only crypto assets supported
+      return;
+    }
 
-    navigate(ROUTES.LOAN_REVIEW, { state: confirmationData });
+    // Navigate to review with selection data (API will be called on confirm)
+    navigate(ROUTES.LOAN_REVIEW, { 
+      state: { 
+        loanRequest: {
+          assets: cryptoAssets.map(asset => ({
+            symbol: asset.symbol,
+            allocation_usd: (collateralAmounts[asset.id] || 0) * asset.price,
+          })),
+          months: loanMonths,
+          payout_currency: payoutCurrency,
+          bank: selectedBank,
+        },
+        selectedAssets: selectedAssets.map(asset => ({
+          name: asset.name,
+          symbol: asset.symbol,
+          amount: collateralAmounts[asset.id] || 0,
+          value: (collateralAmounts[asset.id] || 0) * asset.price,
+        })),
+        totalCollateral: totalCollateralValue,
+      } 
+    });
   };
 
   return (
@@ -243,29 +258,13 @@ export function LoanApplication() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-text-muted text-xs">
-                      {selectedAssetIds.length > 0 ? 'Total Collateral' : 'Max Portfolio Value'}
-                    </span>
-                    <span className="text-xl font-bold text-text-primary">
-                      {formatCurrency(selectedAssetIds.length > 0 ? totalCollateralValue : mockPortfolio.totalValue)}
-                    </span>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-text-muted text-xs">Max Loan Amount</span>
-                    <span className="text-xl font-bold text-altrion-400">
-                      {formatCurrency(selectedAssetIds.length > 0 ? maxLoanAmount : mockLoanEligibility.maxLoanAmount)}
-                    </span>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-text-muted text-xs">Max LTV</span>
-                    <span className="text-xl font-bold text-text-primary">{maxLTV}%</span>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-text-muted text-xs">Interest Rate</span>
-                    <span className="text-xl font-bold text-text-primary">{interestRate}%</span>
-                  </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-text-muted text-xs">
+                    {selectedAssetIds.length > 0 ? 'Total Collateral' : 'Max Portfolio Value'}
+                  </span>
+                  <span className="text-xl font-bold text-text-primary">
+                    {formatCurrency(selectedAssetIds.length > 0 ? totalCollateralValue : mockPortfolio.totalValue)}
+                  </span>
                 </div>
               </div>
             </Card>
@@ -618,17 +617,11 @@ export function LoanApplication() {
                                     </div>
 
                                     {/* Right Column - Summary */}
-                                    <div className="flex flex-col justify-between p-4 bg-dark-card rounded-lg">
+                                    <div className="flex flex-col justify-center p-4 bg-dark-card rounded-lg">
                                       <div>
                                         <p className="text-xs text-text-muted mb-1">Collateral Value</p>
                                         <p className="text-2xl font-bold text-altrion-400">
                                           {formatCurrency(collateralValue)}
-                                        </p>
-                                      </div>
-                                      <div className="border-t border-dark-border pt-3 mt-3">
-                                        <p className="text-xs text-text-muted mb-1">Max Loan ({maxLTV}% LTV)</p>
-                                        <p className="text-2xl font-bold text-text-primary">
-                                          {formatCurrency(collateralValue * (maxLTV / 100))}
                                         </p>
                                       </div>
                                     </div>
@@ -647,8 +640,111 @@ export function LoanApplication() {
             </Card>
           </motion.div>
 
+          {/* Loan Term Selection */}
+          <motion.div variants={ITEM_VARIANTS}>
+            <Card variant="bordered">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                    <Wallet size={20} className="text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-xl font-semibold text-text-primary">Loan Term</h3>
+                    <p className="text-sm text-text-secondary">Select your preferred loan duration</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  {([6, 12, 18, 24, 36] as const).map((months) => (
+                    <button
+                      key={months}
+                      onClick={() => setLoanMonths(months)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                        loanMonths === months
+                          ? 'bg-altrion-500 text-text-primary'
+                          : 'bg-dark-elevated text-text-muted hover:text-text-primary'
+                      }`}
+                    >
+                      {months} mo
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+
+          {/* Payout Options */}
+          <motion.div variants={ITEM_VARIANTS}>
+            <Card variant="bordered">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+                {/* Payout Currency */}
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+                    <Wallet size={20} className="text-green-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-xl font-semibold text-text-primary">Payout Currency</h3>
+                    <p className="text-sm text-text-secondary">How would you like to receive your loan?</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  {(['USD', 'USDT'] as const).map((currency) => (
+                    <button
+                      key={currency}
+                      onClick={() => setPayoutCurrency(currency)}
+                      className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${
+                        payoutCurrency === currency
+                          ? 'bg-altrion-500 text-text-primary'
+                          : 'bg-dark-elevated text-text-muted hover:text-text-primary'
+                      }`}
+                    >
+                      {currency}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+
+          {/* Bank Selection */}
+          <motion.div variants={ITEM_VARIANTS}>
+            <Card variant="bordered">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                    <Wallet size={20} className="text-purple-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-xl font-semibold text-text-primary">Bank Account</h3>
+                    <p className="text-sm text-text-secondary">Select your bank for payout</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  {([
+                    { value: 'chase' as const, label: 'Chase' },
+                    { value: 'bofa' as const, label: 'Bank of America' },
+                  ]).map((bank) => (
+                    <button
+                      key={bank.value}
+                      onClick={() => setSelectedBank(bank.value)}
+                      className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${
+                        selectedBank === bank.value
+                          ? 'bg-altrion-500 text-text-primary'
+                          : 'bg-dark-elevated text-text-muted hover:text-text-primary'
+                      }`}
+                    >
+                      {bank.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+
           {/* Action Buttons */}
-          <motion.div variants={ITEM_VARIANTS} className="flex gap-4 justify-center">
+          <motion.div variants={ITEM_VARIANTS} className="flex gap-4 justify-center pb-8">
             <Button
               variant="secondary"
               onClick={() => navigate(ROUTES.DASHBOARD)}
@@ -665,7 +761,7 @@ export function LoanApplication() {
                 disabled={selectedAssetIds.length === 0}
                 size="lg"
               >
-                Submit Application
+                Review Application
                 {selectedAssetIds.length > 0 && ` with ${selectedAssetIds.length} Asset${selectedAssetIds.length !== 1 ? 's' : ''}`}
                 <ArrowUpRight size={16} />
               </Button>
