@@ -9,3 +9,5 @@ export { PasswordInput } from './PasswordInput';
 export { Skeleton, CardSkeleton, TableRowSkeleton, ChartSkeleton } from './Skeleton';
 export { PlatformIcon } from './PlatformIcon';
 export { ToastProvider, useToast } from './Toast';
+export { Footer } from './Footer';
+export { Header } from './Header';

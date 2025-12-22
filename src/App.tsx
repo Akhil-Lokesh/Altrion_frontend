@@ -4,7 +4,7 @@ import { ROUTES } from './constants';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { QueryProvider, ErrorBoundary } from './components/providers';
 import { ProtectedRoute, PublicOnlyRoute, PageSkeleton } from './components/routing';
-import { ToastProvider } from './components/ui';
+import { ToastProvider, Footer } from './components/ui';
 
 // Lazy load pages for code splitting
 const Login = lazy(() => import('./pages/auth/Login').then(m => ({ default: m.Login })));
@@ -15,6 +15,7 @@ const ConnectAPI = lazy(() => import('./pages/connect/ConnectAPI').then(m => ({ 
 const Dashboard = lazy(() => import('./pages/dashboard/Dashboard').then(m => ({ default: m.Dashboard })));
 const LoanApplication = lazy(() => import('./pages/dashboard/LoanApplication').then(m => ({ default: m.LoanApplication })));
 const LoanReview = lazy(() => import('./pages/dashboard/LoanReview').then(m => ({ default: m.LoanReview })));
+const LoanSummary = lazy(() => import('./pages/dashboard/LoanSummary').then(m => ({ default: m.LoanSummary })));
 const LoanConfirmation = lazy(() => import('./pages/dashboard/LoanConfirmation').then(m => ({ default: m.LoanConfirmation })));
 
 function AppRoutes() {
@@ -93,6 +94,14 @@ function AppRoutes() {
           }
         />
         <Route
+          path={ROUTES.LOAN_SUMMARY}
+          element={
+            <ProtectedRoute>
+              <LoanSummary />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path={ROUTES.LOAN_CONFIRMATION}
           element={
             <ProtectedRoute>
@@ -116,7 +125,12 @@ function App() {
         <ThemeProvider>
           <ToastProvider>
             <BrowserRouter>
-              <AppRoutes />
+              <div className="min-h-screen flex flex-col">
+                <main className="flex-1">
+                  <AppRoutes />
+                </main>
+                <Footer />
+              </div>
             </BrowserRouter>
           </ToastProvider>
         </ThemeProvider>

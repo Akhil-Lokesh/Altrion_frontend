@@ -6,21 +6,20 @@ import {
   Wallet,
   TrendingUp,
   TrendingDown,
-  Bell,
-  Settings,
-  LogOut,
   ArrowUpRight,
   PieChart,
   ChevronDown,
   Minus,
   Plus,
+  Calendar,
+  DollarSign,
+  Landmark,
 } from 'lucide-react';
-import { Button, Card, Logo, ThemeToggle, Checkbox, Tooltip } from '../../components/ui';
+import { Button, Card, Header, Checkbox, Tooltip } from '../../components/ui';
 import { mockPortfolio } from '../../mock/data';
 import { formatCurrency, formatPercent, generateChartData, normalizeChartY, normalizeChartX } from '../../utils';
 import type { ChartPeriod } from '../../utils';
 import { CONTAINER_VARIANTS, ITEM_VARIANTS, ROUTES } from '../../constants';
-import { useLogout } from '../../hooks';
 import type { PayoutCurrency, BankOption } from '@/types';
 
 // Type for collateral amounts
@@ -28,7 +27,6 @@ type CollateralAmounts = Record<string, number>;
 
 export function LoanApplication() {
   const navigate = useNavigate();
-  const logoutMutation = useLogout();
   const [activeTab, setActiveTab] = useState<'all' | 'crypto' | 'stocks' | 'cash'>('all');
   const [chartPeriod, setChartPeriod] = useState<ChartPeriod>('24H');
   const [selectedAssetIds, setSelectedAssetIds] = useState<string[]>([]);
@@ -191,31 +189,7 @@ export function LoanApplication() {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-cyan/5 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '10s' }} />
       </div>
 
-      {/* Navigation */}
-      <nav className="border-b border-dark-border bg-dark-card/80 backdrop-blur-lg sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-5 py-0.5">
-          <div className="flex items-center justify-between">
-            <div className="-ml-2">
-              <Logo size="sm" variant="icon" />
-            </div>
-
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm">
-                <Bell size={18} />
-              </Button>
-              <Button variant="ghost" size="sm">
-                <Settings size={18} />
-              </Button>
-              <div className="w-px h-6 bg-dark-border" />
-              <ThemeToggle />
-              <div className="w-px h-6 bg-dark-border" />
-              <Button variant="ghost" size="sm" onClick={() => logoutMutation.mutate()}>
-                <LogOut size={18} />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Header />
 
       <main className="max-w-7xl mx-auto px-5 py-6">
         <motion.div
@@ -646,7 +620,7 @@ export function LoanApplication() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                    <Wallet size={20} className="text-blue-400" />
+                    <Calendar size={20} className="text-blue-400" />
                   </div>
                   <div>
                     <h3 className="font-display text-xl font-semibold text-text-primary">Loan Term</h3>
@@ -680,7 +654,7 @@ export function LoanApplication() {
                 {/* Payout Currency */}
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
-                    <Wallet size={20} className="text-green-400" />
+                    <DollarSign size={20} className="text-green-400" />
                   </div>
                   <div>
                     <h3 className="font-display text-xl font-semibold text-text-primary">Payout Currency</h3>
@@ -713,7 +687,7 @@ export function LoanApplication() {
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
-                    <Wallet size={20} className="text-purple-400" />
+                    <Landmark size={20} className="text-purple-400" />
                   </div>
                   <div>
                     <h3 className="font-display text-xl font-semibold text-text-primary">Bank Account</h3>

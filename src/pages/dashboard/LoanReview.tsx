@@ -3,9 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   ArrowLeft,
-  Bell,
-  Settings,
-  LogOut,
   AlertCircle,
   Wallet,
   Shield,
@@ -14,11 +11,10 @@ import {
   ChevronUp,
   FileText,
 } from 'lucide-react';
-import { Button, Card, Logo, ThemeToggle } from '../../components/ui';
+import { Button, Card, Header } from '../../components/ui';
 import { formatCurrency } from '../../utils';
 import { CONTAINER_VARIANTS, ITEM_VARIANTS, ROUTES } from '../../constants';
-import { useLogout, useCalculateLoan } from '../../hooks';
-import { useLoanStore } from '../../store';
+import { useCalculateLoan } from '../../hooks';
 import type { LoanCalculateRequest } from '@/types';
 
 interface SelectedAsset {
@@ -42,8 +38,6 @@ const BANK_LABELS: Record<string, string> = {
 export function LoanReview() {
   const navigate = useNavigate();
   const location = useLocation();
-  const logoutMutation = useLogout();
-  const addApplication = useLoanStore((state) => state.addApplication);
   const calculateLoanMutation = useCalculateLoan();
 
   // Get loan data from router state
@@ -70,19 +64,19 @@ export function LoanReview() {
     try {
       // Call the loan API
       const loanResponse = await calculateLoanMutation.mutateAsync(loanRequest);
-      const summary = loanResponse.summary;
 
-      // Save the loan application to the store
-      const applicationId = addApplication({
-        totalCollateral: summary.total_collateral,
-        loanAmount: summary.total_loan,
-        interestRate: summary.interest_rate,
-        ltv: summary.portfolio_ltv,
-        selectedAssets: loanData.selectedAssets,
+      // Navigate to loan summary page to show full details before final confirmation
+      navigate(ROUTES.LOAN_SUMMARY, {
+        state: {
+          loanResponse,
+          selectedAssets,
+          loanRequest: {
+            months: loanRequest.months,
+            payout_currency: loanRequest.payout_currency,
+            bank: loanRequest.bank,
+          }
+        }
       });
-
-      // Navigate to confirmation/success page with the application ID and full loan response
-      navigate(ROUTES.LOAN_CONFIRMATION, { state: { loanResponse, selectedAssets, applicationId } });
     } catch (error) {
       console.error('Loan calculation failed:', error);
     }
@@ -104,31 +98,7 @@ export function LoanReview() {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-cyan/5 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '10s' }} />
       </div>
 
-      {/* Navigation */}
-      <nav className="border-b border-dark-border bg-dark-card/80 backdrop-blur-lg sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-5 py-0.5">
-          <div className="flex items-center justify-between">
-            <div className="-ml-2">
-              <Logo size="sm" variant="icon" />
-            </div>
-
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm">
-                <Bell size={18} />
-              </Button>
-              <Button variant="ghost" size="sm">
-                <Settings size={18} />
-              </Button>
-              <div className="w-px h-6 bg-dark-border" />
-              <ThemeToggle />
-              <div className="w-px h-6 bg-dark-border" />
-              <Button variant="ghost" size="sm" onClick={() => logoutMutation.mutate()}>
-                <LogOut size={18} />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Header />
 
       <main className="max-w-3xl mx-auto px-5 py-8">
         <motion.div
@@ -347,11 +317,11 @@ export function LoanReview() {
               <ArrowLeft size={16} />
               Go Back & Edit
             </Button>
-            <Button 
+            <Button
               onClick={handleConfirm}
               disabled={calculateLoanMutation.isPending}
             >
-              {calculateLoanMutation.isPending ? 'Processing...' : 'Confirm & Submit'}
+              {calculateLoanMutation.isPending ? 'Calculating...' : 'Continue to Review'}
               {!calculateLoanMutation.isPending && <ArrowRight size={16} />}
             </Button>
           </motion.div>

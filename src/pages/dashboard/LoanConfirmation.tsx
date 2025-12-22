@@ -3,9 +3,6 @@ import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   CheckCircle,
-  Bell,
-  Settings,
-  LogOut,
   Copy,
   Home,
   FileText,
@@ -13,10 +10,9 @@ import {
   Shield,
   Wallet,
 } from 'lucide-react';
-import { Button, Card, Logo, ThemeToggle } from '../../components/ui';
+import { Button, Card, Header } from '../../components/ui';
 import { formatCurrency } from '../../utils';
 import { CONTAINER_VARIANTS, ITEM_VARIANTS, ROUTES } from '../../constants';
-import { useLogout } from '../../hooks';
 import type { LoanCalculateResponse } from '@/types';
 
 interface SelectedAsset {
@@ -35,7 +31,6 @@ interface LoanConfirmationData {
 export function LoanConfirmation() {
   const navigate = useNavigate();
   const location = useLocation();
-  const logoutMutation = useLogout();
   const [copied, setCopied] = useState(false);
 
   // Get loan data from router state
@@ -88,33 +83,9 @@ export function LoanConfirmation() {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-cyan/5 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '10s' }} />
       </div>
 
-      {/* Navigation */}
-      <nav className="border-b border-dark-border bg-dark-card/80 backdrop-blur-lg sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-5 py-0.5">
-          <div className="flex items-center justify-between">
-            <div className="-ml-2">
-              <Logo size="sm" variant="icon" />
-            </div>
+      <Header />
 
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm">
-                <Bell size={18} />
-              </Button>
-              <Button variant="ghost" size="sm">
-                <Settings size={18} />
-              </Button>
-              <div className="w-px h-6 bg-dark-border" />
-              <ThemeToggle />
-              <div className="w-px h-6 bg-dark-border" />
-              <Button variant="ghost" size="sm" onClick={() => logoutMutation.mutate()}>
-                <LogOut size={18} />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <main className="max-w-4xl mx-auto px-5 pt-16">
+      <main className="max-w-4xl mx-auto px-5 pt-16 pb-16">
         <motion.div
           variants={CONTAINER_VARIANTS}
           initial="hidden"

@@ -12,6 +12,7 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   LOAN_APPLICATION: '/dashboard/loan',
   LOAN_REVIEW: '/dashboard/loan/review',
+  LOAN_SUMMARY: '/dashboard/loan/summary',
   LOAN_CONFIRMATION: '/dashboard/loan/confirmation',
 
   // Default
