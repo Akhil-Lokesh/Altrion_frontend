@@ -18,6 +18,8 @@ const LoanApplication = lazy(() => import('./pages/dashboard/LoanApplication').t
 const LoanReview = lazy(() => import('./pages/dashboard/LoanReview').then(m => ({ default: m.LoanReview })));
 const LoanSummary = lazy(() => import('./pages/dashboard/LoanSummary').then(m => ({ default: m.LoanSummary })));
 const LoanConfirmation = lazy(() => import('./pages/dashboard/LoanConfirmation').then(m => ({ default: m.LoanConfirmation })));
+const Profile = lazy(() => import('./pages/dashboard/Profile').then(m => ({ default: m.Profile })));
+const LoanDetail = lazy(() => import('./pages/dashboard/LoanDetail').then(m => ({ default: m.LoanDetail })));
 
 function AppRoutes() {
   return (
@@ -75,6 +77,22 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.PROFILE}
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.LOAN_DETAIL}
+          element={
+            <ProtectedRoute>
+              <LoanDetail />
             </ProtectedRoute>
           }
         />

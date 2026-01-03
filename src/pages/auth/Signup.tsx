@@ -103,6 +103,7 @@ export function Signup() {
             value={form.name}
             onChange={(e) => updateValue('name', e.target.value)}
             icon={<User size={18} />}
+            labelBgClass="bg-light-bg dark:bg-dark-bg"
             required
           />
         </motion.div>
@@ -118,6 +119,7 @@ export function Signup() {
             value={form.email}
             onChange={(e) => updateValue('email', e.target.value)}
             icon={<Mail size={18} />}
+            labelBgClass="bg-light-bg dark:bg-dark-bg"
             required
           />
         </motion.div>
@@ -135,6 +137,7 @@ export function Signup() {
               value={form.password}
               onChange={(e) => updateValue('password', e.target.value)}
               icon={<Lock size={18} />}
+              labelBgClass="bg-light-bg dark:bg-dark-bg"
               required
             />
             <button
@@ -159,6 +162,7 @@ export function Signup() {
             value={form.confirmPassword}
             onChange={(e) => updateValue('confirmPassword', e.target.value)}
             icon={<Lock size={18} />}
+            labelBgClass="bg-light-bg dark:bg-dark-bg"
             required
           />
         </motion.div>

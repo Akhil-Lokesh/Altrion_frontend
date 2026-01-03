@@ -6,7 +6,7 @@ import { ROUTES } from '../../constants';
 import { useAuthStore, selectIsAuthenticated } from '../../store';
 
 interface LogoProps {
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   showText?: boolean;
   variant?: 'full' | 'icon';
   clickable?: boolean;
@@ -20,6 +20,7 @@ export function Logo({ size = 'md', showText = true, variant = 'full', clickable
     sm: { icon: 40, text: 'text-lg' },
     md: { icon: 56, text: 'text-xl' },
     lg: { icon: 80, text: 'text-3xl' },
+    xl: { icon: 180, text: 'text-4xl' },
   };
 
   const logoSrc = variant === 'icon' ? logoIconImage : logoImage;

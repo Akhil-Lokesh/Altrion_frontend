@@ -31,6 +31,7 @@ interface LoanActions {
   updateApplicationStatus: (id: string, status: LoanApplication['status']) => void;
   setActiveLoan: (loan: LoanApplication | null) => void;
   getApplicationById: (id: string) => LoanApplication | undefined;
+  cancelApplication: (id: string) => boolean;
   clearApplications: () => void;
 }
 
@@ -91,6 +92,17 @@ export const useLoanStore = create<LoanStore>()(
 
       getApplicationById: (id) => {
         return get().applications.find(app => app.id === id);
+      },
+
+      cancelApplication: (id) => {
+        const app = get().applications.find(a => a.id === id);
+        if (!app || app.status !== 'pending') {
+          return false;
+        }
+        set((state) => {
+          state.applications = state.applications.filter(a => a.id !== id);
+        });
+        return true;
       },
 
       clearApplications: () =>

@@ -7,10 +7,11 @@ interface PasswordInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
   label?: string;
   error?: string;
   showStrength?: boolean;
+  labelBgClass?: string;
 }
 
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
-  ({ label = 'Password', error, showStrength = false, value, ...props }, ref) => {
+  ({ label = 'Password', error, showStrength = false, value, labelBgClass, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const toggleVisibility = useCallback(() => {
@@ -46,6 +47,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             value={value}
             error={error}
             icon={<Lock size={18} />}
+            labelBgClass={labelBgClass}
             {...props}
           />
           <button

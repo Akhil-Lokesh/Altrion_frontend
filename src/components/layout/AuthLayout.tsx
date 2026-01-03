@@ -41,7 +41,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
             transition={{ duration: 0.6 }}
             className="flex justify-center"
           >
-            <Logo size="lg" variant="full" showText={false} />
+            <Logo size="xl" variant="full" showText={false} />
           </motion.div>
 
           {/* Main Content */}

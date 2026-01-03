@@ -94,6 +94,7 @@ export function Login() {
             {...register('email')}
             icon={<Mail size={18} />}
             error={errors.email?.message}
+            labelBgClass="bg-light-bg dark:bg-dark-bg"
           />
         </motion.div>
 
@@ -108,6 +109,7 @@ export function Login() {
             label="Password"
             {...register('password')}
             error={errors.password?.message}
+            labelBgClass="bg-light-bg dark:bg-dark-bg"
           />
         </motion.div>
 

@@ -25,9 +25,7 @@ export const PlatformHoldingsAccordion = memo(function PlatformHoldingsAccordion
   totalValue,
 }: PlatformHoldingsAccordionProps) {
   const navigate = useNavigate();
-  const [expandedPlatforms, setExpandedPlatforms] = useState<Set<string>>(
-    new Set(holdings.map(h => h.platform)) // All expanded by default
-  );
+  const [expandedPlatforms, setExpandedPlatforms] = useState<Set<string>>(new Set());
 
   const togglePlatform = (platform: string) => {
     setExpandedPlatforms(prev => {
@@ -68,16 +66,16 @@ export const PlatformHoldingsAccordion = memo(function PlatformHoldingsAccordion
             return (
               <div
                 key={holding.platform}
-                className="border border-dark-border rounded-xl overflow-hidden bg-dark-elevated/50"
+                className="border border-light-border dark:border-dark-border rounded-xl overflow-hidden bg-light-elevated/50 dark:bg-dark-elevated/50"
               >
-                {/* Header */}
+                {/* Header - Clickable */}
                 <button
                   onClick={() => togglePlatform(holding.platform)}
-                  className="w-full px-4 py-3 flex items-center justify-between hover:bg-dark-elevated transition-colors"
+                  className="w-full px-4 py-3 flex items-center justify-between hover:bg-light-elevated dark:hover:bg-dark-elevated transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     {/* Platform Icon */}
-                    <div className="w-10 h-10 rounded-full bg-dark-card border border-dark-border flex items-center justify-center overflow-hidden">
+                    <div className="w-10 h-10 rounded-full bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border flex items-center justify-center overflow-hidden">
                       {logoSrc ? (
                         <img
                           src={logoSrc}
@@ -114,7 +112,7 @@ export const PlatformHoldingsAccordion = memo(function PlatformHoldingsAccordion
                   </div>
                 </button>
 
-                {/* Expanded Content */}
+                {/* Expanded Content - Visualization */}
                 <AnimatePresence>
                   {isExpanded && (
                     <motion.div
@@ -123,10 +121,14 @@ export const PlatformHoldingsAccordion = memo(function PlatformHoldingsAccordion
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <div className="px-4 pb-4 pt-1 border-t border-dark-border">
+                      <div className="px-4 pb-4 pt-4 border-t border-light-border dark:border-dark-border">
                         {/* Progress Bar */}
-                        <div className="mb-3">
-                          <div className="h-2 bg-dark-border rounded-full overflow-hidden">
+                        <div className="mb-5">
+                          <div className="flex items-center justify-between text-xs text-text-muted mb-2">
+                            <span>Portfolio Share</span>
+                            <span>{percentage.toFixed(1)}%</span>
+                          </div>
+                          <div className="h-1.5 bg-light-border dark:bg-dark-border rounded-full overflow-hidden">
                             <motion.div
                               className="h-full bg-gradient-to-r from-altrion-400 to-altrion-500 rounded-full"
                               initial={{ width: 0 }}
@@ -138,13 +140,13 @@ export const PlatformHoldingsAccordion = memo(function PlatformHoldingsAccordion
 
                         {/* Details Grid */}
                         <div className="grid grid-cols-2 gap-3">
-                          <div className="p-3 bg-dark-card rounded-lg">
+                          <div className="p-3 bg-light-card dark:bg-dark-card rounded-xl">
                             <p className="text-xs text-text-muted mb-1">Amount</p>
                             <p className="font-semibold text-text-primary">
                               {holding.amount.toLocaleString()} {symbol}
                             </p>
                           </div>
-                          <div className="p-3 bg-dark-card rounded-lg">
+                          <div className="p-3 bg-light-card dark:bg-dark-card rounded-xl">
                             <p className="text-xs text-text-muted mb-1">Value</p>
                             <p className="font-semibold text-altrion-400">
                               {formatCurrency(holding.value)}
@@ -163,7 +165,7 @@ export const PlatformHoldingsAccordion = memo(function PlatformHoldingsAccordion
         {/* Add Platform CTA */}
         <button
           onClick={() => navigate(ROUTES.CONNECT_SELECT)}
-          className="mt-4 w-full px-4 py-3 border-2 border-dashed border-dark-border rounded-xl flex items-center justify-center gap-2 text-text-muted hover:text-text-primary hover:border-altrion-500/50 transition-all"
+          className="mt-4 w-full px-4 py-3 border-2 border-dashed border-light-border dark:border-dark-border rounded-xl flex items-center justify-center gap-2 text-text-muted hover:text-text-primary hover:border-altrion-500/50 transition-all"
         >
           <Plus size={18} />
           Add from new platform

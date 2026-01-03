@@ -13,6 +13,7 @@ import { AssetPriceChart } from './components/AssetPriceChart';
 import { PlatformHoldingsAccordion } from './components/PlatformHoldingsAccordion';
 import { MarketStatsCard } from './components/MarketStatsCard';
 import { AssetActionButtons } from './components/AssetActionButtons';
+import { PriceCalculator } from './components/PriceCalculator';
 
 export function AssetDetail() {
   const navigate = useNavigate();
@@ -105,16 +106,22 @@ export function AssetDetail() {
             onPeriodChange={setChartPeriod}
           />
 
-          {/* Two Column Layout: Holdings & Market Stats */}
+          {/* Two Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Platform Holdings Accordion */}
-            <PlatformHoldingsAccordion
-              holdings={asset.holdings}
-              symbol={asset.symbol}
-              totalValue={asset.totalValue}
-            />
+            {/* Left Column: Holdings + Calculator */}
+            <div className="space-y-6">
+              <PlatformHoldingsAccordion
+                holdings={asset.holdings}
+                symbol={asset.symbol}
+                totalValue={asset.totalValue}
+              />
+              <PriceCalculator
+                symbol={asset.symbol}
+                price={asset.price}
+              />
+            </div>
 
-            {/* Market Statistics */}
+            {/* Right Column: Market Statistics */}
             <MarketStatsCard
               marketStats={asset.marketStats}
               symbol={asset.symbol}

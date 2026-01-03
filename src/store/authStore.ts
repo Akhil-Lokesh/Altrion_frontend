@@ -21,6 +21,7 @@ interface AuthActions {
   logout: () => void;
   clearError: () => void;
   completeOnboarding: () => void;
+  updateUser: (updates: Partial<User>) => void;
 }
 
 type AuthStore = AuthState & AuthActions;
@@ -85,6 +86,13 @@ export const useAuthStore = create<AuthStore>()(
       completeOnboarding: () =>
         set((state) => {
           state.hasCompletedOnboarding = true;
+        }),
+
+      updateUser: (updates) =>
+        set((state) => {
+          if (state.user) {
+            Object.assign(state.user, updates, { updatedAt: new Date().toISOString() });
+          }
         }),
     })),
     {

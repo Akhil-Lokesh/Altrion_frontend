@@ -107,7 +107,7 @@ export const AssetHero = memo(function AssetHero({ asset }: AssetHeroProps) {
             </div>
 
             {/* Divider */}
-            <div className="w-px h-12 bg-dark-border" />
+            <div className="w-px h-12 bg-green-500/50" />
 
             {/* Total Holdings */}
             <div className="text-right">

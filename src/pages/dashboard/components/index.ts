@@ -5,3 +5,7 @@ export { AssetAllocationCard } from './AssetAllocationCard';
 export { PortfolioHealthCard } from './PortfolioHealthCard';
 export { PortfolioChart } from './PortfolioChart';
 export { AssetsTable } from './AssetsTable';
+export { ProfileHeader } from './ProfileHeader';
+export { LoanApplicationsCard } from './LoanApplicationsCard';
+export { ConnectedAccountsCard } from './ConnectedAccountsCard';
+export { PriceCalculator } from './PriceCalculator';

@@ -6,10 +6,11 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   icon?: React.ReactNode;
+  labelBgClass?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, icon, className = '', value, ...props }, ref) => {
+  ({ label, error, icon, className = '', value, labelBgClass, ...props }, ref) => {
     const [isFocused, setIsFocused] = useState(false);
     const hasValue = value !== undefined && value !== '';
     const isActive = isFocused || hasValue;
@@ -30,12 +31,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               className={`
                 absolute left-3 px-2 pointer-events-none z-10
                 font-medium transition-colors duration-200
+                ${labelBgClass || 'bg-light-card dark:bg-dark-card'}
                 ${isActive ? 'text-altrion-400' : 'text-text-muted'}
                 ${error ? 'text-error' : ''}
               `}
               style={{
                 transformOrigin: 'left center',
-                backgroundColor: 'var(--color-dark-bg)',
               }}
             >
               {label}
@@ -67,6 +68,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               h-12
               px-3 text-text-primary text-[15px]
               focus:outline-none transition-all duration-200
+              selection:bg-altrion-500/30 selection:text-text-primary
               ${error
                 ? 'border-error focus:border-error'
                 : isFocused
