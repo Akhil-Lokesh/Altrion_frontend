@@ -28,7 +28,7 @@ export const PortfolioHealthCard = memo(function PortfolioHealthCard({
         <div className="relative">
           <svg width="140" height="140" viewBox="0 0 140 140" role="img" aria-label={`Portfolio health score: ${riskScore} out of 100`}>
             <title>Portfolio Health Score</title>
-            <circle cx="70" cy="70" r="60" fill="none" stroke="#1f2937" strokeWidth="12" />
+            <circle cx="70" cy="70" r="60" fill="none" className="stroke-dark-elevated" strokeWidth="12" />
             <circle
               cx="70"
               cy="70"

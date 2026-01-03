@@ -1,93 +1,131 @@
-import { ApiError } from './api';
+import { api, ApiError } from './api';
 import type { User, AuthResponse } from '@/types';
 import type { LoginFormData, SignupFormData } from '@/schemas';
 
-// Simulated delay for demo purposes - remove in production
-const simulateDelay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// Backend response types (matching actual backend structure)
+interface BackendAuthResponse {
+  success: boolean;
+  message: string;
+  data: {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      avatar: string | null;
+      provider: string;
+      isEmailVerified: boolean;
+    };
+    accessToken: string;
+    refreshToken: string;
+  };
+}
 
-// Mock user for development - replace with real API calls
-const mockUser: User = {
-  id: '1',
-  email: 'demo@altrion.io',
-  name: 'Demo User',
-  displayName: 'Demo',
+interface BackendUserResponse {
+  success: boolean;
+  data: {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      avatar: string | null;
+      provider: string;
+      isEmailVerified: boolean;
+    };
+  };
+}
+
+// Transform backend response to frontend format
+const transformAuthResponse = (response: BackendAuthResponse): AuthResponse => ({
+  user: {
+    id: response.data.user.id,
+    email: response.data.user.email,
+    name: response.data.user.name,
+    displayName: response.data.user.name?.split(' ')[0] || response.data.user.email.split('@')[0],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  tokens: {
+    accessToken: response.data.accessToken,
+    refreshToken: response.data.refreshToken,
+    expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days
+  },
+});
+
+const transformUser = (data: BackendUserResponse['data']): User => ({
+  id: data.user.id,
+  email: data.user.email,
+  name: data.user.name,
+  displayName: data.user.name?.split(' ')[0] || data.user.email.split('@')[0],
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
-};
+});
 
 export const authService = {
   /**
    * Login with email and password
    */
   async login(credentials: LoginFormData): Promise<AuthResponse> {
-    // TODO: Replace with real API call
-    // const { data } = await api.post<AuthResponse>('/auth/login', credentials);
-    // return data;
-
-    // Mock implementation for development
-    await simulateDelay(1500);
-    
-    // Simulate validation
-    if (credentials.email && credentials.password) {
-      return {
-        user: { ...mockUser, email: credentials.email },
-        tokens: {
-          accessToken: 'mock-access-token',
-          refreshToken: 'mock-refresh-token',
-          expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
-        },
-      };
+    try {
+      const { data } = await api.post<BackendAuthResponse>('/auth/signin', {
+        email: credentials.email,
+        password: credentials.password,
+      });
+      return transformAuthResponse(data);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        const errorData = error.data as { message?: string };
+        const message = errorData?.message || 'Invalid credentials';
+        throw new ApiError(error.status, message);
+      }
+      throw error;
     }
-    
-    throw new ApiError(401, 'Invalid credentials');
   },
 
   /**
    * Register a new user
    */
   async signup(data: SignupFormData): Promise<AuthResponse> {
-    // TODO: Replace with real API call
-    // const { data: response } = await api.post<AuthResponse>('/auth/register', data);
-    // return response;
-
-    await simulateDelay(1500);
-    
-    return {
-      user: { ...mockUser, email: data.email, name: data.name },
-      tokens: {
-        accessToken: 'mock-access-token',
-        refreshToken: 'mock-refresh-token',
-        expiresAt: Date.now() + 24 * 60 * 60 * 1000,
-      },
-    };
+    try {
+      const { data: response } = await api.post<BackendAuthResponse>('/auth/signup', {
+        email: data.email,
+        password: data.password,
+        name: data.name,
+      });
+      return transformAuthResponse(response);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        const errorData = error.data as { message?: string };
+        const message = errorData?.message || 'Registration failed';
+        throw new ApiError(error.status, message);
+      }
+      throw error;
+    }
   },
 
   /**
    * Logout current user
    */
   async logout(): Promise<void> {
-    // TODO: Replace with real API call
-    // await api.post('/auth/logout');
-    
-    await simulateDelay(500);
+    try {
+      await api.post('/auth/logout');
+    } catch (error) {
+      // Ignore logout errors - clear local state anyway
+      console.warn('Logout API call failed:', error);
+    }
   },
 
   /**
    * Refresh authentication tokens
    */
   async refreshToken(_refreshToken: string): Promise<AuthResponse> {
-    // TODO: Replace with real API call
-    // const { data } = await api.post<AuthResponse>('/auth/refresh', { refreshToken });
-    // return data;
-
-    await simulateDelay(500);
-    
+    // Backend doesn't have refresh endpoint yet - return current user
+    const user = await this.getCurrentUser();
     return {
-      user: mockUser,
+      user,
       tokens: {
-        accessToken: 'new-mock-access-token',
-        refreshToken: 'new-mock-refresh-token',
-        expiresAt: Date.now() + 24 * 60 * 60 * 1000,
+        accessToken: _refreshToken,
+        refreshToken: _refreshToken,
+        expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
       },
     };
   },
@@ -96,44 +134,32 @@ export const authService = {
    * Get current user profile
    */
   async getCurrentUser(): Promise<User> {
-    // TODO: Replace with real API call
-    // const { data } = await api.get<User>('/auth/me');
-    // return data;
-
-    await simulateDelay(500);
-    return mockUser;
+    const { data } = await api.get<BackendUserResponse>('/auth/me');
+    return transformUser(data.data);
   },
 
   /**
    * Request password reset
    */
   async forgotPassword(_email: string): Promise<void> {
-    // TODO: Replace with real API call
-    // await api.post('/auth/forgot-password', { email });
-    
-    await simulateDelay(1000);
+    // TODO: Implement when backend supports it
+    throw new ApiError(501, 'Password reset not implemented yet');
   },
 
   /**
    * Reset password with token
    */
   async resetPassword(_token: string, _password: string): Promise<void> {
-    // TODO: Replace with real API call
-    // await api.post('/auth/reset-password', { token, password });
-    
-    await simulateDelay(1000);
+    // TODO: Implement when backend supports it
+    throw new ApiError(501, 'Password reset not implemented yet');
   },
 
   /**
-   * OAuth login initiation
+   * OAuth login initiation - redirects to backend OAuth URL
    */
   async oauthLogin(provider: 'google' | 'github'): Promise<string> {
-    // TODO: Return OAuth redirect URL from backend
-    // const { data } = await api.get<{ url: string }>(`/auth/oauth/${provider}`);
-    // return data.url;
-
-    // Mock - would redirect to OAuth provider
-    return `https://oauth.example.com/${provider}`;
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+    return `${apiUrl}/auth/${provider}`;
   },
 };
 

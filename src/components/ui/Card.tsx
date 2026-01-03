@@ -35,7 +35,8 @@ export function Card({
         ${variants[variant]}
         ${paddings[padding]}
         rounded-2xl
-        ${hover ? 'cursor-pointer transition-shadow hover:shadow-lg hover:shadow-altrion-500/10' : ''}
+        transition-shadow duration-200
+        ${hover ? 'cursor-pointer hover:shadow-lg hover:shadow-altrion-500/10' : ''}
         ${className}
       `}
     >

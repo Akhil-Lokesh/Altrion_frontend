@@ -10,7 +10,7 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      className="relative w-12 h-12 rounded-lg flex items-center justify-center transition-colors bg-dark-card border border-dark-border hover:border-dark-border-hover"
+      className="theme-toggle relative w-12 h-12 rounded-lg flex items-center justify-center transition-all bg-dark-card border border-dark-border hover:border-altrion-500/50"
       aria-label="Toggle theme"
     >
       <motion.div

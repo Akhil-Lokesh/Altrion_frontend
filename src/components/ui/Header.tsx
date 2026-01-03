@@ -8,7 +8,7 @@ export function Header() {
   const logoutMutation = useLogout();
 
   return (
-    <nav className="border-b border-dark-border bg-dark-card/80 backdrop-blur-lg sticky top-0 z-50">
+    <nav className="header-nav border-b border-dark-border bg-dark-card/80 backdrop-blur-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-5 py-1.5">
         <div className="flex items-center justify-between">
           <Logo size="md" variant="icon" />

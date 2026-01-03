@@ -1,27 +1,41 @@
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import logoImage from '../../assets/logo.png';
-import logoIconImage from '../../assets/logo2.png';
+import logoIconImage from '../../assets/logo_2.png';
+import { ROUTES } from '../../constants';
+import { useAuthStore, selectIsAuthenticated } from '../../store';
 
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
   showText?: boolean;
   variant?: 'full' | 'icon';
+  clickable?: boolean;
 }
 
-export function Logo({ size = 'md', showText = true, variant = 'full' }: LogoProps) {
+export function Logo({ size = 'md', showText = true, variant = 'full', clickable = true }: LogoProps) {
+  const navigate = useNavigate();
+  const isAuthenticated = useAuthStore(selectIsAuthenticated);
+
   const sizes = {
-    sm: { icon: 56, text: 'text-lg' },
+    sm: { icon: 40, text: 'text-lg' },
     md: { icon: 56, text: 'text-xl' },
-    lg: { icon: 240, text: 'text-3xl' },
+    lg: { icon: 80, text: 'text-3xl' },
   };
 
   const logoSrc = variant === 'icon' ? logoIconImage : logoImage;
+
+  const handleClick = () => {
+    if (clickable) {
+      navigate(isAuthenticated ? ROUTES.DASHBOARD : ROUTES.LOGIN);
+    }
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex items-center gap-3"
+      className={`flex items-center gap-3 ${clickable ? 'cursor-pointer' : ''}`}
+      onClick={handleClick}
     >
       <img
         src={logoSrc}

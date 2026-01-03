@@ -46,12 +46,19 @@ export function PublicOnlyRoute({
   redirectTo = ROUTES.DASHBOARD,
 }: PublicOnlyRouteProps) {
   const isAuthenticated = useAuthStore(selectIsAuthenticated);
+  const hasCompletedOnboarding = useAuthStore((state) => state.hasCompletedOnboarding);
   const location = useLocation();
 
   if (isAuthenticated) {
     // Check if there's a return URL in state
-    const from = (location.state as { from?: string })?.from || redirectTo;
-    return <Navigate to={from} replace />;
+    const from = (location.state as { from?: string })?.from;
+
+    // If user hasn't completed onboarding, redirect there first
+    if (!hasCompletedOnboarding && location.pathname === ROUTES.SIGNUP) {
+      return <Navigate to={ROUTES.ONBOARDING} replace />;
+    }
+
+    return <Navigate to={from || redirectTo} replace />;
   }
 
   return <>{children}</>;

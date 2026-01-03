@@ -90,26 +90,128 @@ body {
 
 /* Light theme */
 :root.light {
-  --color-dark-bg: #f9f9f9;
+  /* Backgrounds - Cool gray palette for depth */
+  --color-dark-bg: #e8ecf2;
   --color-dark-surface: #ffffff;
   --color-dark-card: #ffffff;
-  --color-dark-elevated: #f0f0f0;
-  --color-dark-input: #f5f5f5;
-  --color-dark-border: #e0e0e0;
-  --color-dark-border-hover: #d0d0d0;
+  --color-dark-elevated: #f7f9fc;
+  --color-dark-input: #f5f7fa;
+  --color-dark-border: #e2e8f0;
+  --color-dark-border-hover: #cbd5e1;
 
-  --color-text-primary: #0f0f0f;
-  --color-text-secondary: #555555;
-  --color-text-muted: #888888;
-  --color-text-subtle: #aaaaaa;
+  /* Text - Higher contrast for readability */
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748b;
+  --color-text-subtle: #94a3b8;
+
+  /* Shadows - Professional depth system */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1), 0 4px 20px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.15), 0 12px 40px rgba(0, 0, 0, 0.1);
+  --shadow-elevated: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-header: 0 1px 0 rgba(0, 0, 0, 0.05), 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
 :root.light body {
   background:
-    radial-gradient(ellipse at 20% 0%, rgba(16, 185, 129, 0.05), transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(6, 182, 212, 0.03), transparent 50%),
-    #f5f5f5;
-  color: #1a1a1a;
+    radial-gradient(ellipse at 20% 0%, rgba(16, 185, 129, 0.06), transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(6, 182, 212, 0.04), transparent 50%),
+    #e8ecf2;
+  color: #0f172a;
+}
+
+/* Light mode card shadows - Strong depth */
+:root.light .bg-dark-card {
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+:root.light .bg-dark-card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* Light mode header styling - Visible with shadow */
+:root.light .header-nav {
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: var(--shadow-header);
+  border-bottom-color: #e8ecf1;
+}
+
+/* Light mode footer styling */
+:root.light .footer-nav {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #e8ecf1;
+}
+
+/* Light mode elevated surfaces - Subtle distinction */
+:root.light .bg-dark-elevated {
+  background: #e8ecf1;
+}
+
+/* Light mode icon backgrounds - More vibrant green */
+:root.light .bg-altrion-500\/20,
+:root.light .bg-altrion-500\/10 {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+}
+
+/* Light mode accent backgrounds */
+:root.light .bg-accent-cyan\/20,
+:root.light .bg-accent-cyan\/10 {
+  background-color: rgba(6, 182, 212, 0.15) !important;
+}
+
+:root.light .bg-blue-500\/20,
+:root.light .bg-blue-500\/10 {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+:root.light .bg-amber-500\/20,
+:root.light .bg-amber-500\/10 {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+:root.light .bg-purple-500\/20,
+:root.light .bg-purple-500\/10 {
+  background-color: rgba(168, 85, 247, 0.15) !important;
+}
+
+/* Light mode glass card effect */
+:root.light .glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-card);
+}
+
+/* SVG stroke colors using theme variables */
+.stroke-dark-elevated {
+  stroke: var(--color-dark-elevated);
+}
+
+:root.light .stroke-dark-elevated {
+  stroke: #e2e8f0;
+}
+
+/* Light mode theme toggle button */
+:root.light .theme-toggle {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-color: #e2e8f0;
+}
+
+:root.light .theme-toggle:hover {
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+}
+
+/* Light mode range input styling */
+:root.light input[type="range"] {
+  background: #e2e8f0;
+}
+
+:root.light input[type="range"]::-webkit-slider-runnable-track {
+  background: #e2e8f0;
+}
+
+:root.light input[type="range"]::-moz-range-track {
+  background: #e2e8f0;
 }
 
 #root {

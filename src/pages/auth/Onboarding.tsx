@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Sparkles, Trophy, Star } from 'lucide-react';
 import { Button, Card, Logo } from '../../components/ui';
+import { useAuthStore } from '../../store';
 
 // Confetti component for celebration moment (peak-end rule)
 const Confetti = () => (
@@ -48,12 +49,15 @@ const steps = [
 
 export function Onboarding() {
   const navigate = useNavigate();
+  const completeOnboarding = useAuthStore((state) => state.completeOnboarding);
   const [showCelebration, setShowCelebration] = useState(false);
   const [form, setForm] = useState({
     displayName: '',
   });
 
   const handleNext = () => {
+    // Mark onboarding as complete
+    completeOnboarding();
     // Peak-end rule: Trigger celebration before final navigation
     setShowCelebration(true);
     setTimeout(() => {

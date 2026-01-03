@@ -9,6 +9,7 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  hasCompletedOnboarding: boolean;
 }
 
 interface AuthActions {
@@ -19,6 +20,7 @@ interface AuthActions {
   login: (user: User, token: string) => void;
   logout: () => void;
   clearError: () => void;
+  completeOnboarding: () => void;
 }
 
 type AuthStore = AuthState & AuthActions;
@@ -29,6 +31,7 @@ const initialState: AuthState = {
   isAuthenticated: false,
   isLoading: false,
   error: null,
+  hasCompletedOnboarding: false,
 };
 
 export const useAuthStore = create<AuthStore>()(
@@ -71,11 +74,17 @@ export const useAuthStore = create<AuthStore>()(
           state.token = null;
           state.isAuthenticated = false;
           state.error = null;
+          state.hasCompletedOnboarding = false;
         }),
 
       clearError: () =>
         set((state) => {
           state.error = null;
+        }),
+
+      completeOnboarding: () =>
+        set((state) => {
+          state.hasCompletedOnboarding = true;
         }),
     })),
     {
@@ -85,6 +94,7 @@ export const useAuthStore = create<AuthStore>()(
         user: state.user,
         token: state.token,
         isAuthenticated: state.isAuthenticated,
+        hasCompletedOnboarding: state.hasCompletedOnboarding,
       }),
     }
   )

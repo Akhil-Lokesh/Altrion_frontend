@@ -45,7 +45,9 @@ export function useSignup() {
     },
     onSuccess: (data) => {
       storeLogin(data.user, data.tokens.accessToken);
-      navigate(ROUTES.ONBOARDING);
+      // Use replace to prevent PublicOnlyRoute from interfering
+      // Navigate with state to indicate this is a fresh signup
+      navigate(ROUTES.ONBOARDING, { replace: true });
     },
     onError: (error: Error) => {
       setError(error.message);

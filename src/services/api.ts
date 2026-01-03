@@ -111,13 +111,16 @@ const fetchWithTimeout = async (
 
 // Build URL with query params
 const buildUrl = (endpoint: string, params?: Record<string, string>): string => {
-  const url = new URL(endpoint, API_BASE_URL);
-  if (params) {
-    Object.entries(params).forEach(([key, value]) => {
-      url.searchParams.append(key, value);
-    });
+  // Handle both relative and absolute URLs
+  const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+  const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  let url = `${baseUrl}${path}`;
+
+  if (params && Object.keys(params).length > 0) {
+    const searchParams = new URLSearchParams(params);
+    url += `?${searchParams.toString()}`;
   }
-  return url.toString();
+  return url;
 };
 
 // Main API client

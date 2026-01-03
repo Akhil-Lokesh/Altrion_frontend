@@ -150,10 +150,37 @@ const AssetRow = memo(function AssetRow({
         </span>
       </td>
       <td className="px-5 py-3">
-        <span className="px-2 py-1 bg-dark-elevated rounded-lg text-text-secondary text-sm">
-          {asset.platform}
-        </span>
+        <PlatformBadge platform={asset.platform} />
       </td>
     </motion.tr>
+  );
+});
+
+const PLATFORM_LOGOS: Record<string, string> = {
+  'Coinbase': '/coinbase.svg',
+  'MetaMask': '/metamask.png',
+  'Robinhood': '/robinhood.svg',
+};
+
+const PlatformBadge = memo(function PlatformBadge({ platform }: { platform: string }) {
+  const logoSrc = PLATFORM_LOGOS[platform];
+
+  return (
+    <div className="flex items-center gap-2.5">
+      <div className="w-8 h-8 rounded-full bg-dark-card border border-dark-border flex items-center justify-center overflow-hidden">
+        {logoSrc ? (
+          <img
+            src={logoSrc}
+            alt={platform}
+            className="w-5 h-5 object-contain"
+          />
+        ) : (
+          <span className="text-xs font-bold text-text-muted">
+            {platform.slice(0, 2).toUpperCase()}
+          </span>
+        )}
+      </div>
+      <span className="text-text-secondary text-sm">{platform}</span>
+    </div>
   );
 });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -25,6 +25,13 @@ import type { PayoutCurrency, BankOption } from '@/types';
 // Type for collateral amounts
 type CollateralAmounts = Record<string, number>;
 
+// Platform logos mapping
+const PLATFORM_LOGOS: Record<string, string> = {
+  'Coinbase': '/coinbase.svg',
+  'MetaMask': '/metamask.png',
+  'Robinhood': '/robinhood.svg',
+};
+
 export function LoanApplication() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'all' | 'crypto' | 'stocks' | 'cash'>('all');
@@ -35,8 +42,49 @@ export function LoanApplication() {
   const [loanMonths, setLoanMonths] = useState<6 | 12 | 18 | 24 | 36>(12);
   const [payoutCurrency, setPayoutCurrency] = useState<PayoutCurrency>('USD');
   const [selectedBank, setSelectedBank] = useState<BankOption>('chase');
+  const [hoveredPoint, setHoveredPoint] = useState<{ index: number; x: number; y: number } | null>(null);
 
-  const filteredAssets = mockPortfolio.assets.filter(asset => {
+  // Aggregate assets by symbol (combine same assets from different platforms)
+  const aggregatedAssets = useMemo(() => {
+    const assetMap = new Map<string, {
+      id: string;
+      symbol: string;
+      name: string;
+      amount: number;
+      value: number;
+      price: number;
+      change24h: number;
+      platforms: string[];
+      type: 'crypto' | 'stock' | 'stablecoin';
+    }>();
+
+    mockPortfolio.assets.forEach(asset => {
+      const existing = assetMap.get(asset.symbol);
+      if (existing) {
+        existing.amount += asset.amount;
+        existing.value += asset.value;
+        if (!existing.platforms.includes(asset.platform)) {
+          existing.platforms.push(asset.platform);
+        }
+      } else {
+        assetMap.set(asset.symbol, {
+          id: asset.id,
+          symbol: asset.symbol,
+          name: asset.name,
+          amount: asset.amount,
+          value: asset.value,
+          price: asset.price,
+          change24h: asset.change24h,
+          platforms: [asset.platform],
+          type: asset.type,
+        });
+      }
+    });
+
+    return Array.from(assetMap.values());
+  }, []);
+
+  const filteredAssets = aggregatedAssets.filter(asset => {
     if (activeTab === 'all') return true;
     if (activeTab === 'crypto') return asset.type === 'crypto';
     if (activeTab === 'stocks') return asset.type === 'stock';
@@ -46,7 +94,7 @@ export function LoanApplication() {
 
   // Handle individual asset selection
   const handleSelectAsset = (assetId: string) => {
-    const asset = mockPortfolio.assets.find(a => a.id === assetId);
+    const asset = aggregatedAssets.find(a => a.id === assetId);
     if (!asset) return;
 
     setSelectedAssetIds(prev => {
@@ -105,7 +153,7 @@ export function LoanApplication() {
 
   // Update collateral amount for an asset
   const updateCollateralAmount = (assetId: string, amount: number) => {
-    const asset = mockPortfolio.assets.find(a => a.id === assetId);
+    const asset = aggregatedAssets.find(a => a.id === assetId);
     if (!asset) return;
 
     // Clamp amount between 0 and max holdings
@@ -118,7 +166,7 @@ export function LoanApplication() {
 
   // Set percentage of holdings
   const setPercentage = (assetId: string, percent: number) => {
-    const asset = mockPortfolio.assets.find(a => a.id === assetId);
+    const asset = aggregatedAssets.find(a => a.id === assetId);
     if (!asset) return;
 
     const amount = (asset.amount * percent) / 100;
@@ -132,7 +180,7 @@ export function LoanApplication() {
   const isIndeterminate = selectedCount > 0 && selectedCount < filteredAssetIds.length;
 
   // Get selected assets with their collateral amounts
-  const selectedAssets = mockPortfolio.assets.filter(
+  const selectedAssets = aggregatedAssets.filter(
     asset => selectedAssetIds.includes(asset.id)
   );
 
@@ -142,10 +190,13 @@ export function LoanApplication() {
     return sum + (amount * asset.price);
   }, 0);
 
-  // Chart data
-  const chartData = generateChartData(mockPortfolio.totalValue, chartPeriod);
-  const maxValue = Math.max(...chartData.map(d => d.value));
-  const minValue = Math.min(...chartData.map(d => d.value));
+  // Chart data - memoized to prevent regeneration on mouse move
+  const chartData = useMemo(
+    () => generateChartData(mockPortfolio.totalValue, chartPeriod),
+    [chartPeriod]
+  );
+  const maxValue = useMemo(() => Math.max(...chartData.map(d => d.value)), [chartData]);
+  const minValue = useMemo(() => Math.min(...chartData.map(d => d.value)), [chartData]);
 
   const handleSubmit = () => {
     if (selectedAssetIds.length === 0) return;
@@ -277,7 +328,19 @@ export function LoanApplication() {
               </div>
 
               {/* Chart */}
-              <div className="relative h-64 w-full pl-10">
+              <div
+                className="relative h-64 w-full pl-10"
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left - 40; // Subtract padding
+                  const chartWidth = rect.width - 40;
+                  const index = Math.round((x / chartWidth) * (chartData.length - 1));
+                  if (index >= 0 && index < chartData.length) {
+                    setHoveredPoint({ index, x: e.clientX - rect.left, y: e.clientY - rect.top });
+                  }
+                }}
+                onMouseLeave={() => setHoveredPoint(null)}
+              >
                 <svg className="w-full h-full" viewBox="0 0 800 200" preserveAspectRatio="none">
                   {/* Gradient Definitions */}
                   <defs>
@@ -321,18 +384,65 @@ export function LoanApplication() {
                     strokeLinejoin="round"
                   />
 
+                  {/* Crosshair Line */}
+                  {hoveredPoint && (
+                    <line
+                      x1={normalizeChartX(hoveredPoint.index, chartData.length)}
+                      y1="0"
+                      x2={normalizeChartX(hoveredPoint.index, chartData.length)}
+                      y2="200"
+                      stroke="#10b981"
+                      strokeWidth="1"
+                      strokeDasharray="4 4"
+                      opacity="0.7"
+                    />
+                  )}
+
                   {/* Data Points */}
                   {chartData.map((point, i) => (
                     <circle
                       key={i}
                       cx={normalizeChartX(i, chartData.length)}
                       cy={normalizeChartY(point.value, minValue, maxValue)}
-                      r="4"
+                      r={hoveredPoint?.index === i ? 6 : 4}
                       fill="#10b981"
-                      className="opacity-0 hover:opacity-100 transition-opacity"
+                      className={hoveredPoint?.index === i ? 'opacity-100' : 'opacity-0'}
+                      style={{ transition: 'all 0.15s ease' }}
                     />
                   ))}
+
+                  {/* Highlighted Point Glow */}
+                  {hoveredPoint && (
+                    <circle
+                      cx={normalizeChartX(hoveredPoint.index, chartData.length)}
+                      cy={normalizeChartY(chartData[hoveredPoint.index].value, minValue, maxValue)}
+                      r="10"
+                      fill="#10b981"
+                      opacity="0.3"
+                    />
+                  )}
                 </svg>
+
+                {/* Tooltip */}
+                {hoveredPoint && (
+                  <div
+                    className="absolute z-10 pointer-events-none"
+                    style={{
+                      left: `${hoveredPoint.x}px`,
+                      top: '10px',
+                      transform: 'translateX(-50%)',
+                    }}
+                  >
+                    <div className="bg-dark-card border border-dark-border rounded-lg px-3 py-2 shadow-lg">
+                      <p className="text-lg font-bold text-altrion-400">
+                        {formatCurrency(chartData[hoveredPoint.index].value)}
+                      </p>
+                      <p className="text-xs text-text-muted">
+                        {chartData[hoveredPoint.index].label}
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Value Labels on Y-axis */}
                 <div className="absolute left-0 top-0 h-full flex flex-col justify-between py-2">
@@ -482,9 +592,42 @@ export function LoanApplication() {
                           </td>
                           <td className="px-5 py-3">
                             <div className="flex items-center gap-2">
-                              <span className="px-2 py-1 bg-dark-elevated rounded-lg text-text-secondary text-sm">
-                                {asset.platform}
-                              </span>
+                              {/* Platform icons - overlapping design */}
+                              <div className="flex items-center -space-x-2">
+                                {[...asset.platforms].sort().slice(0, 3).map((platform) => (
+                                  <div
+                                    key={platform}
+                                    className="group relative"
+                                  >
+                                    {/* Circular icon */}
+                                    <div className="w-8 h-8 rounded-full bg-dark-card border-2 border-dark-bg flex items-center justify-center overflow-hidden cursor-pointer transition-all group-hover:scale-105 group-hover:z-10 group-hover:border-dark-border">
+                                      {PLATFORM_LOGOS[platform] ? (
+                                        <img
+                                          src={PLATFORM_LOGOS[platform]}
+                                          alt={platform}
+                                          className="w-5 h-5 object-contain"
+                                        />
+                                      ) : (
+                                        <span className="text-xs font-bold text-text-muted">
+                                          {platform.slice(0, 2).toUpperCase()}
+                                        </span>
+                                      )}
+                                    </div>
+                                    {/* Tooltip above icon */}
+                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex items-center h-7 px-2.5 rounded-full bg-dark-card border border-dark-border shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-50">
+                                      <span className="text-xs font-medium text-text-primary whitespace-nowrap">
+                                        {platform}
+                                      </span>
+                                    </div>
+                                  </div>
+                                ))}
+                                {/* Plus button for additional platforms */}
+                                {asset.platforms.length > 3 && (
+                                  <div className="w-8 h-8 rounded-full bg-dark-elevated border-2 border-dark-border flex items-center justify-center">
+                                    <span className="text-xs font-bold text-text-muted">+{asset.platforms.length - 3}</span>
+                                  </div>
+                                )}
+                              </div>
                               {isSelected && (
                                 <button
                                   onClick={(e) => {

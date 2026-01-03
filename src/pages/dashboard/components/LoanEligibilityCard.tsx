@@ -31,9 +31,9 @@ export const LoanEligibilityCard = memo(function LoanEligibilityCard({
             </div>
           </div>
 
-          <div className="flex items-baseline gap-2">
-            <span className="text-text-muted text-xs">Max Loan Amount</span>
-            <span className="text-xl font-bold text-altrion-400">
+          <div className="flex flex-col items-center lg:flex-1 lg:mx-8">
+            <span className="text-text-muted text-xs mb-1">You're eligible for up to</span>
+            <span className="text-3xl font-bold font-display text-altrion-400">
               {formatCurrency(loanEligibility.maxLoanAmount)}
             </span>
           </div>
