@@ -32,6 +32,15 @@ const PLATFORM_LOGOS: Record<string, string> = {
   'Robinhood': '/robinhood.svg',
 };
 
+// Asset logo URLs
+const ASSET_LOGOS: Record<string, string> = {
+  BTC: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
+  ETH: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
+  USDC: 'https://assets.coingecko.com/coins/images/6319/large/usdc.png',
+  USDT: 'https://assets.coingecko.com/coins/images/325/large/Tether.png',
+  SOL: 'https://assets.coingecko.com/coins/images/4128/large/solana.png',
+};
+
 export function LoanApplication() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'all' | 'crypto' | 'stocks' | 'cash'>('all');
@@ -558,8 +567,18 @@ export function LoanApplication() {
                           </td>
                           <td className="px-5 py-3">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-full bg-dark-elevated flex items-center justify-center font-bold text-sm">
-                                {asset.symbol.slice(0, 2)}
+                              <div className="w-10 h-10 rounded-full bg-dark-elevated flex items-center justify-center overflow-hidden">
+                                {ASSET_LOGOS[asset.symbol] ? (
+                                  <img
+                                    src={ASSET_LOGOS[asset.symbol]}
+                                    alt={asset.name}
+                                    className="w-6 h-6 object-contain"
+                                  />
+                                ) : (
+                                  <span className="font-bold text-sm text-text-muted">
+                                    {asset.symbol.slice(0, 2)}
+                                  </span>
+                                )}
                               </div>
                               <div>
                                 <p className="font-medium text-text-primary">{asset.name}</p>
@@ -597,10 +616,10 @@ export function LoanApplication() {
                                 {[...asset.platforms].sort().slice(0, 3).map((platform) => (
                                   <div
                                     key={platform}
-                                    className="group relative"
+                                    className="group/platform relative"
                                   >
                                     {/* Circular icon */}
-                                    <div className="w-8 h-8 rounded-full bg-dark-card border-2 border-dark-bg flex items-center justify-center overflow-hidden cursor-pointer transition-all group-hover:scale-105 group-hover:z-10 group-hover:border-dark-border">
+                                    <div className="w-8 h-8 rounded-full bg-dark-card border-2 border-dark-bg flex items-center justify-center overflow-hidden cursor-pointer transition-all group-hover/platform:scale-105 group-hover/platform:z-10 group-hover/platform:border-dark-border">
                                       {PLATFORM_LOGOS[platform] ? (
                                         <img
                                           src={PLATFORM_LOGOS[platform]}
@@ -614,7 +633,7 @@ export function LoanApplication() {
                                       )}
                                     </div>
                                     {/* Tooltip above icon */}
-                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex items-center h-7 px-2.5 rounded-full bg-dark-card border border-dark-border shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-50">
+                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex items-center h-7 px-2.5 rounded-full bg-dark-card border border-dark-border shadow-lg opacity-0 group-hover/platform:opacity-100 transition-opacity duration-150 pointer-events-none z-50">
                                       <span className="text-xs font-medium text-text-primary whitespace-nowrap">
                                         {platform}
                                       </span>

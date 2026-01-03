@@ -10,6 +10,7 @@ export const ROUTES = {
 
   // App routes
   DASHBOARD: '/dashboard',
+  ASSET_DETAIL: '/dashboard/asset/:symbol',
   LOAN_APPLICATION: '/dashboard/loan',
   LOAN_REVIEW: '/dashboard/loan/review',
   LOAN_SUMMARY: '/dashboard/loan/summary',
@@ -18,3 +19,7 @@ export const ROUTES = {
   // Default
   HOME: '/',
 } as const;
+
+// Helper function to generate asset detail route
+export const getAssetDetailRoute = (symbol: string) =>
+  `/dashboard/asset/${symbol}`;

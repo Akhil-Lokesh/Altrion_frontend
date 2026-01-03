@@ -13,6 +13,7 @@ const Onboarding = lazy(() => import('./pages/auth/Onboarding').then(m => ({ def
 const SelectWallets = lazy(() => import('./pages/connect/SelectWallets').then(m => ({ default: m.SelectWallets })));
 const ConnectAPI = lazy(() => import('./pages/connect/ConnectAPI').then(m => ({ default: m.ConnectAPI })));
 const Dashboard = lazy(() => import('./pages/dashboard/Dashboard').then(m => ({ default: m.Dashboard })));
+const AssetDetail = lazy(() => import('./pages/dashboard/AssetDetail').then(m => ({ default: m.AssetDetail })));
 const LoanApplication = lazy(() => import('./pages/dashboard/LoanApplication').then(m => ({ default: m.LoanApplication })));
 const LoanReview = lazy(() => import('./pages/dashboard/LoanReview').then(m => ({ default: m.LoanReview })));
 const LoanSummary = lazy(() => import('./pages/dashboard/LoanSummary').then(m => ({ default: m.LoanSummary })));
@@ -74,6 +75,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.ASSET_DETAIL}
+          element={
+            <ProtectedRoute>
+              <AssetDetail />
             </ProtectedRoute>
           }
         />

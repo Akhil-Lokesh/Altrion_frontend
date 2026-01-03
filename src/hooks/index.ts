@@ -1,3 +1,4 @@
+export { useAssetDetail } from './useAssetDetail';
 export { useConnectionStatus } from './useConnectionStatus';
 export { useForm } from './useForm';
 export { usePasswordToggle } from './usePasswordToggle';

@@ -9,17 +9,27 @@ import {
   ArrowUpRight,
   PieChart,
   Shield,
+  ChevronRight,
 } from 'lucide-react';
 import { Button, Card, Header } from '../../components/ui';
 import { mockPortfolio, mockLoanEligibility } from '../../mock/data';
 import { formatCurrency, formatPercent, generateChartData, normalizeChartY, normalizeChartX } from '../../utils';
 import type { ChartPeriod } from '../../utils';
-import { CONTAINER_VARIANTS, ITEM_VARIANTS, ROUTES } from '../../constants';
+import { CONTAINER_VARIANTS, ITEM_VARIANTS, ROUTES, getAssetDetailRoute } from '../../constants';
 
 const PLATFORM_LOGOS: Record<string, string> = {
   'Coinbase': '/coinbase.svg',
   'MetaMask': '/metamask.png',
   'Robinhood': '/robinhood.svg',
+};
+
+// Asset logo URLs
+const ASSET_LOGOS: Record<string, string> = {
+  BTC: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
+  ETH: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
+  USDC: 'https://assets.coingecko.com/coins/images/6319/large/usdc.png',
+  USDT: 'https://assets.coingecko.com/coins/images/325/large/Tether.png',
+  SOL: 'https://assets.coingecko.com/coins/images/4128/large/solana.png',
 };
 
 export function Dashboard() {
@@ -555,7 +565,7 @@ export function Dashboard() {
 
           {/* Assets Table */}
           <motion.div variants={ITEM_VARIANTS} className="mt-6" id="assets-table">
-            <Card variant="bordered" padding="none">
+            <Card variant="bordered" padding="none" className="overflow-hidden">
               <div className="p-5 border-b border-dark-border">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -598,6 +608,7 @@ export function Dashboard() {
                       <th className="font-display px-5 py-3 font-medium">Value</th>
                       <th className="font-display px-5 py-3 font-medium">24h Change</th>
                       <th className="font-display px-5 py-3 font-medium">Platform</th>
+                      <th className="px-3 py-3 w-10"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -607,15 +618,23 @@ export function Dashboard() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: index * 0.05 }}
-                        className={`border-b border-dark-border/50 hover:bg-dark-elevated/50 transition-colors cursor-pointer ${
-                          selectedAssetId === asset.id ? 'bg-altrion-500/10' : ''
-                        }`}
-                        onClick={() => setSelectedAssetId(selectedAssetId === asset.id ? null : asset.id)}
+                        className="border-b border-dark-border/50 hover:bg-dark-elevated/50 transition-colors cursor-pointer group"
+                        onClick={() => navigate(getAssetDetailRoute(asset.symbol))}
                       >
                         <td className="px-5 py-3">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-dark-elevated flex items-center justify-center font-bold text-sm">
-                              {asset.symbol.slice(0, 2)}
+                            <div className="w-10 h-10 rounded-full bg-dark-elevated flex items-center justify-center overflow-hidden">
+                              {ASSET_LOGOS[asset.symbol] ? (
+                                <img
+                                  src={ASSET_LOGOS[asset.symbol]}
+                                  alt={asset.name}
+                                  className="w-6 h-6 object-contain"
+                                />
+                              ) : (
+                                <span className="font-bold text-sm text-text-muted">
+                                  {asset.symbol.slice(0, 2)}
+                                </span>
+                              )}
                             </div>
                             <div>
                               <p className="font-medium text-text-primary">{asset.name}</p>
@@ -647,10 +666,10 @@ export function Dashboard() {
                             {[...asset.platforms].sort().slice(0, 3).map((platform) => (
                               <div
                                 key={platform}
-                                className="group relative"
+                                className="group/platform relative"
                               >
                                 {/* Circular icon */}
-                                <div className="w-8 h-8 rounded-full bg-dark-card border-2 border-dark-bg flex items-center justify-center overflow-hidden cursor-pointer transition-all group-hover:scale-105 group-hover:z-10 group-hover:border-dark-border">
+                                <div className="w-8 h-8 rounded-full bg-dark-card border-2 border-dark-bg flex items-center justify-center overflow-hidden cursor-pointer transition-all group-hover/platform:scale-105 group-hover/platform:z-10 group-hover/platform:border-dark-border">
                                   {PLATFORM_LOGOS[platform] ? (
                                     <img
                                       src={PLATFORM_LOGOS[platform]}
@@ -664,7 +683,7 @@ export function Dashboard() {
                                   )}
                                 </div>
                                 {/* Tooltip above icon */}
-                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex items-center h-7 px-2.5 rounded-full bg-dark-card border border-dark-border shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-50">
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex items-center h-7 px-2.5 rounded-full bg-dark-card border border-dark-border shadow-lg opacity-0 group-hover/platform:opacity-100 transition-opacity duration-150 pointer-events-none z-50">
                                   <span className="text-xs font-medium text-text-primary whitespace-nowrap">
                                     {platform}
                                   </span>
@@ -672,16 +691,18 @@ export function Dashboard() {
                               </div>
                             ))}
                             {/* Plus button for additional wallets */}
-                            {asset.platforms.length > 3 ? (
-                              <div className="w-8 h-8 rounded-full bg-dark-elevated border-2 border-dark-border flex items-center justify-center cursor-pointer hover:bg-dark-card transition-colors">
+                            {asset.platforms.length > 3 && (
+                              <div className="w-8 h-8 rounded-full bg-dark-elevated border-2 border-dark-border flex items-center justify-center">
                                 <span className="text-xs font-bold text-text-muted">+{asset.platforms.length - 3}</span>
-                              </div>
-                            ) : (
-                              <div className="w-8 h-8 rounded-full bg-dark-elevated border-2 border-dashed border-dark-border flex items-center justify-center cursor-pointer hover:bg-dark-card hover:border-altrion-500/50 transition-colors">
-                                <span className="text-lg text-text-muted hover:text-altrion-400">+</span>
                               </div>
                             )}
                           </div>
+                        </td>
+                        <td className="pl-0 pr-5 py-3">
+                          <ChevronRight
+                            size={20}
+                            className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity"
+                          />
                         </td>
                       </motion.tr>
                     ))}
