@@ -24,7 +24,7 @@ export const LoanEligibilityCard = memo(function LoanEligibilityCard({
               <Wallet size={20} className="text-altrion-400" />
             </div>
             <div>
-              <h3 className="font-display text-xl font-semibold text-text-primary">
+              <h3 className="font-sohne-heading text-2xl font-bold text-text-primary">
                 Loan Eligibility
               </h3>
               <p className="text-sm text-text-secondary">Based on your portfolio</p>

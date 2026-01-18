@@ -49,6 +49,13 @@ export function ProfileHeader() {
       .slice(0, 2);
   };
 
+  const capitalizeFirstLetter = (name: string) => {
+    return name
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+
   const handleEditClick = () => {
     reset({
       name: user?.name || '',
@@ -156,7 +163,7 @@ export function ProfileHeader() {
             {/* User Info */}
             <div className="flex-1 min-w-0">
               <h2 className="font-display text-2xl font-bold text-text-primary truncate">
-                {user.displayName || user.name}
+                {capitalizeFirstLetter(user.displayName || user.name)}
               </h2>
               <p className="text-text-secondary truncate">{user.email}</p>
               <div className="flex items-center gap-1.5 mt-1.5 text-text-muted text-sm">

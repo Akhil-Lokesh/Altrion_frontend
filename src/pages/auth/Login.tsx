@@ -55,7 +55,6 @@ export function Login() {
   return (
     <AuthLayout
       title="Welcome back"
-      subtitle="Sign in to your account to continue"
     >
       {/* Quick wins - Social proof for returning users */}
       <motion.div

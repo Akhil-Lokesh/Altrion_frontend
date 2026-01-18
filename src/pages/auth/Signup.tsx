@@ -46,7 +46,6 @@ export function Signup() {
   return (
     <AuthLayout
       title="Create your account"
-      subtitle="Start managing your unified portfolio today"
     >
       {/* Social Proof - Anchoring effect */}
       <motion.div

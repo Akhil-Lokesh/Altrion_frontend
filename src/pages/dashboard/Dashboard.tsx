@@ -12,6 +12,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { Button, Card, Header } from '../../components/ui';
+import { useAuthStore, selectUser } from '../../store';
 import { mockPortfolio, mockLoanEligibility } from '../../mock/data';
 import { formatCurrency, formatPercent, generateChartData, normalizeChartY, normalizeChartX } from '../../utils';
 import type { ChartPeriod } from '../../utils';
@@ -34,6 +35,9 @@ const ASSET_LOGOS: Record<string, string> = {
 
 export function Dashboard() {
   const navigate = useNavigate();
+  const user = useAuthStore(selectUser);
+  const rawFirstName = user?.displayName?.split(' ')[0] || user?.name?.split(' ')[0] || 'there';
+  const firstName = rawFirstName.charAt(0).toUpperCase() + rawFirstName.slice(1).toLowerCase();
   const [activeTab, setActiveTab] = useState<'all' | 'crypto' | 'stocks' | 'cash'>('all');
   const [chartPeriod, setChartPeriod] = useState<ChartPeriod>('24H');
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
@@ -142,10 +146,13 @@ export function Dashboard() {
           className="space-y-6"
         >
           {/* Header */}
-          <motion.div variants={ITEM_VARIANTS} className="flex items-center justify-between">
+          <motion.div variants={ITEM_VARIANTS} className="flex items-end justify-between">
             <div>
-              <h1 className="font-display text-3xl font-bold text-text-primary">Dashboard</h1>
-              <p className="text-text-secondary text-sm mt-0.5">Welcome back! Here's your portfolio overview.</p>
+              <h1 className="font-display text-4xl font-black leading-tight">
+                <span className="text-text-primary">Welcome, {firstName}.</span>
+                <br />
+                <span className="text-altrion-400">Dashboard</span>
+              </h1>
             </div>
             <Button onClick={() => navigate(ROUTES.CONNECT_SELECT)}>
               <Plus size={18} />
@@ -232,8 +239,7 @@ export function Dashboard() {
                     <Wallet size={20} className="text-altrion-400" />
                   </div>
                   <div>
-                    <h3 className="font-display text-xl font-semibold text-text-primary">Loan Eligibility</h3>
-                    <p className="text-sm text-text-secondary">Based on your portfolio</p>
+                    <h3 className="font-sohne-heading text-2xl font-bold text-text-primary">Loan Eligibility</h3>
                   </div>
                 </div>
 
@@ -254,8 +260,7 @@ export function Dashboard() {
                   <PieChart size={20} className="text-purple-400" />
                 </div>
                 <div>
-                  <h3 className="font-display text-xl font-semibold text-text-primary">Asset Allocation</h3>
-                  <p className="text-sm text-text-secondary">Portfolio distribution</p>
+                  <h3 className="font-sohne-heading text-2xl font-bold text-text-primary">Asset Allocation</h3>
                 </div>
               </div>
 
@@ -307,8 +312,7 @@ export function Dashboard() {
                   <Shield size={20} className="text-accent-cyan" />
                 </div>
                 <div>
-                  <h3 className="font-display text-xl font-semibold text-text-primary">Portfolio Health</h3>
-                  <p className="text-sm text-text-secondary">Overall performance score</p>
+                  <h3 className="font-sohne-heading text-2xl font-bold text-text-primary">Portfolio Health</h3>
                 </div>
               </div>
 
@@ -370,11 +374,11 @@ export function Dashboard() {
                     </div>
                   )}
                   <div>
-                    <h3 className="font-display text-xl font-semibold text-text-primary">
+                    <h3 className="font-sohne-heading text-2xl font-bold text-text-primary">
                       {selectedAsset ? `${selectedAsset.name} (${selectedAsset.symbol})` : 'Portfolio Value'}
                     </h3>
-                    <p className="text-sm text-text-secondary">
-                      {selectedAsset ? (
+                    {selectedAsset && (
+                      <p className="text-sm text-text-secondary">
                         <span className="flex items-center gap-2">
                           <span>{formatCurrency(selectedAsset.value)}</span>
                           <span className={selectedAsset.change24h >= 0 ? 'text-green-400' : 'text-red-400'}>
@@ -387,10 +391,8 @@ export function Dashboard() {
                             View all
                           </button>
                         </span>
-                      ) : (
-                        'Track your growth over time'
-                      )}
-                    </p>
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -573,8 +575,7 @@ export function Dashboard() {
                       <PieChart size={20} className="text-altrion-400" />
                     </div>
                     <div>
-                      <h3 className="font-display text-xl font-semibold text-text-primary">Your Assets</h3>
-                      <p className="text-sm text-text-secondary">Detailed breakdown of your holdings</p>
+                      <h3 className="font-sohne-heading text-2xl font-bold text-text-primary">Your Assets</h3>
                     </div>
                   </div>
 

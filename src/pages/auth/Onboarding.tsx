@@ -42,7 +42,7 @@ const Confetti = () => (
 const steps = [
   {
     id: 1,
-    title: 'Nickname',
+    title: 'Username',
     description: 'Help us personalize your experience',
   },
 ];
@@ -131,21 +131,8 @@ export function Onboarding() {
       {/* Header with progress */}
       <div className="p-6 border-b border-dark-border bg-dark-surface/50 backdrop-blur-sm">
         <div className="max-w-3xl mx-auto">
-          <div className="flex items-center justify-between mb-4">
-            <Logo size="sm" />
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-text-muted">
-                {steps[0].title}
-              </span>
-              <div className="flex items-center gap-2">
-                <motion.div
-                  animate={{ scale: 1.1 }}
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-altrion-500/20 border-2 border-altrion-500 text-altrion-400"
-                >
-                  1
-                </motion.div>
-              </div>
-            </div>
+          <div className="flex items-center justify-center mb-4">
+            <Logo size="sm" showText={false} />
           </div>
           {/* Progress bar */}
           <div className="progress-bar">
@@ -155,7 +142,7 @@ export function Onboarding() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex items-center justify-center p-6">
+      <div className="flex-1 flex items-center justify-center p-6 -mt-16">
         <div className="w-full max-w-lg">
           <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -164,12 +151,9 @@ export function Onboarding() {
           >
             {/* Step Header */}
             <div className="mb-8">
-              <h1 className="font-display text-3xl font-bold text-text-primary mb-2 tracking-tight">
+              <h1 className="font-display text-4xl lg:text-5xl font-bold text-text-primary tracking-tight">
                 {steps[0].title}
               </h1>
-              <p className="text-text-secondary">
-                {steps[0].description}
-              </p>
             </div>
 
             {/* Display Name */}
@@ -182,7 +166,7 @@ export function Onboarding() {
                   type="text"
                   value={form.displayName}
                   onChange={(e) => setForm({ ...form, displayName: e.target.value })}
-                  placeholder="Enter your name or nickname"
+                  placeholder="Enter the Username"
                   className="w-full bg-dark-input border border-dark-border rounded-xl px-4 py-3 text-text-primary placeholder-text-muted focus:outline-none focus:border-altrion-500 focus:ring-1 focus:ring-altrion-500/50 transition-all"
                   autoFocus
                 />

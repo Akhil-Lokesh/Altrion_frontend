@@ -50,7 +50,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.7 }}
-              className="font-display text-5xl lg:text-6xl font-bold leading-tight tracking-tight"
+              className="font-display text-5xl lg:text-6xl font-bold leading-none tracking-tight"
             >
               Unified Finance.
               <br />
@@ -58,15 +58,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
                 Intelligent Risk.
               </span>
             </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35, duration: 0.7 }}
-              className="text-text-secondary text-lg leading-relaxed font-light max-w-lg mx-auto"
-            >
-              Track portfolios, issue loans, and protect your assets with AI-powered compliance—all in one platform.
-            </motion.p>
-          </div>
+                      </div>
 
           {/* Features */}
           <motion.div
@@ -109,7 +101,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
 
           {/* Form header */}
           <div className="mb-5">
-            <h1 className="font-display text-3xl lg:text-4xl font-bold text-text-primary mb-2 tracking-tight leading-tight">
+            <h1 className="font-display text-4xl lg:text-5xl font-bold text-text-primary mb-2 tracking-tight leading-tight">
               {title}
             </h1>
             {subtitle && (

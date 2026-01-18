@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import logoImage from '../../assets/logo.png';
-import logoIconImage from '../../assets/logo_2.png';
+import logoImage from "../../assets/justlogo'd.png";
+import logoIconImage from "../../assets/justlogo'd.png";
 import { ROUTES } from '../../constants';
 import { useAuthStore, selectIsAuthenticated } from '../../store';
 

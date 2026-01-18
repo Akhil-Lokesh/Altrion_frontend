@@ -1,6 +1,114 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Poppins:wght@200;300;400;500;600;700&display=swap');
 
+/* F37 Lineca Variable Font */
+@font-face {
+  font-family: 'F37 Lineca';
+  src: url('/fonts/F37Lineca-VF.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Sohne Font Family */
+@font-face {
+  font-family: 'Sohne';
+  src: url('/fonts/TestSohne-Buch-BF663d89cd32e6a.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sohne';
+  src: url('/fonts/TestSohne-Halbfett-BF663d89cd2d67b.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sohne';
+  src: url('/fonts/TestSohne-Extrafett-BF663d89cc9f2c0.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sohne Dreiviertelfett';
+  src: url('/fonts/TestSohne-Dreiviertelfett-BF663d89ccc5f66.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Inter Font Family */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-ExtraBold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* TT Norms Pro Font Family */
+@font-face {
+  font-family: 'TT Norms Pro';
+  src: url('/fonts/TTNormsPro-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TT Norms Pro';
+  src: url('/fonts/TTNormsPro-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TT Norms Pro';
+  src: url('/fonts/TTNormsPro-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TT Norms Pro';
+  src: url('/fonts/TTNormsPro-ExtraBold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   /* Altrion Green Palette - Enhanced for Distinctiveness */
   --color-altrion-50: #ecfdf5;
@@ -43,8 +151,12 @@
   --color-info: #3b82f6;
 
   /* Font Families - Distinctive Typography */
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Poppins', -apple-system, system-ui, sans-serif;
+  --font-display: 'TT Norms Pro', -apple-system, system-ui, sans-serif;
+  --font-body: 'Sohne', -apple-system, system-ui, sans-serif;
+  --font-lineca: 'F37 Lineca', -apple-system, system-ui, sans-serif;
+  --font-sohne: 'Sohne', -apple-system, system-ui, sans-serif;
+  --font-sohne-heading: 'TT Norms Pro', -apple-system, system-ui, sans-serif;
+  --font-inter: 'Inter', -apple-system, system-ui, sans-serif;
 
   /* Shadows - Depth & Elevation */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -363,6 +475,18 @@ body {
 
 .font-body {
   font-family: var(--font-body);
+}
+
+.font-lineca {
+  font-family: var(--font-lineca);
+}
+
+.font-sohne {
+  font-family: var(--font-sohne);
+}
+
+.font-sohne-heading {
+  font-family: var(--font-sohne-heading);
 }
 
 /* Financial number styling - Premium fintech look */
